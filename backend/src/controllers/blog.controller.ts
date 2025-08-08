@@ -1,10 +1,15 @@
-import { Request, Response } from "express";
+import { Request } from "../types/expressRequest"; // ✅ for req.user
+import { Response } from "express";
 import { Blog } from "../models/Blog";
 
 // @desc Create a new blog
 export const createBlog = async (req: Request, res: Response) => {
   try {
-    const blog = await Blog.create(req.body);
+    const blog = await Blog.create({
+      ...req.body,
+      author: req.user?.name,
+      authorId: req.user?._id,
+    });
     res.status(201).json(blog);
   } catch (error) {
     res.status(400).json({ message: "Failed to create blog", error });

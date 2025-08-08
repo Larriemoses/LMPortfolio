@@ -6,13 +6,14 @@ import {
   updateBlog,
   deleteBlog,
 } from "../controllers/blog.controller";
+import { protect } from "../middleware/auth.middleware";
 
 const router = Router();
 
-router.post("/", createBlog);
 router.get("/", getAllBlogs);
 router.get("/:id", getBlogById);
-router.put("/:id", updateBlog);
-router.delete("/:id", deleteBlog);
+router.post("/", protect, createBlog);
+router.put("/:id", protect, updateBlog);
+router.delete("/:id", protect, deleteBlog);
 
-export default router;
+export default router; // ✅ This is what fixes the error
