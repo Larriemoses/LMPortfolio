@@ -17,6 +17,8 @@ logs/
 *.log
 debug.log
 
+
+
 # IDE settings
 .vscode/
 .idea/
