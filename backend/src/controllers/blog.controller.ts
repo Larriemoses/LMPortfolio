@@ -16,11 +16,14 @@ export const createBlog = async (req: Request, res: Response) => {
   }
 };
 
+
 // @desc Get all blogs
 export const getAllBlogs = async (_req: Request, res: Response) => {
   const blogs = await Blog.find().sort({ createdAt: -1 });
   res.json(blogs);
 };
+
+
 
 // @desc Get single blog by ID
 export const getBlogById = async (req: Request, res: Response) => {
