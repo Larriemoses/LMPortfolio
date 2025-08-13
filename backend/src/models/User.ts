@@ -1,13 +1,12 @@
-import { Schema, model, Document, Types } from "mongoose";
+import { Schema, model, Document } from "mongoose";
 import bcrypt from "bcryptjs";
 
-// ✅ Declare the interface once and export it here
 export interface IUser extends Document {
-  _id: Types.ObjectId;
   name: string;
   email: string;
   password: string;
-  comparePassword(candidate: string): Promise<boolean>;
+  role: "user" | "admin";
+  comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
 const userSchema = new Schema<IUser>(
@@ -15,6 +14,7 @@ const userSchema = new Schema<IUser>(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    role: { type: String, enum: ["user", "admin"], default: "user" },
   },
   { timestamps: true }
 );
@@ -26,9 +26,8 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-userSchema.methods.comparePassword = async function (candidate: string) {
-  return await bcrypt.compare(candidate, this.password);
+userSchema.methods.comparePassword = async function (candidatePassword: string) {
+  return bcrypt.compare(candidatePassword, this.password);
 };
 
-// ✅ Export only once here
 export const User = model<IUser>("User", userSchema);

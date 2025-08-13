@@ -6,11 +6,11 @@ export interface IBlog extends Document {
   author: string;
   authorId: Types.ObjectId;
   tags?: string[];
+  category: string;
+  status: "pending" | "approved" | "rejected";
   createdAt: Date;
   updatedAt: Date;
 }
-
-
 
 const blogSchema = new Schema<IBlog>(
   {
@@ -19,6 +19,12 @@ const blogSchema = new Schema<IBlog>(
     author: { type: String, required: true },
     authorId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     tags: [{ type: String }],
+    category: { type: String, required: true },
+    status: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+    },
   },
   { timestamps: true }
 );
