@@ -3,35 +3,38 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
 import morgan from "morgan";
+import path from "path";
 
-// Route imports
 import blogRoutes from "./routes/blog.routes";
 import userRoutes from "./routes/user.routes";
 import serviceRoutes from "./routes/service.routes";
 
-// Load env vars
 dotenv.config();
 
-// Create app instance
 const app: Application = express();
 const PORT = process.env.PORT || 5000;
 
-// Global Middleware
-app.use(cors());
+// Correct CORS configuration to allow specific origin and credentials
+const corsOptions = {
+  origin: "http://localhost:5173", // Replace with your frontend's production URL later
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan("dev"));
 
-// Health Check
+// static files for uploads
+app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
+
 app.get("/", (_req: Request, res: Response) => {
   res.send("API is working...");
 });
 
-// API Routes
 app.use("/api/users", userRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/services", serviceRoutes);
 
-// DB Connection + Server Boot
 mongoose
   .connect(process.env.MONGO_URI as string)
   .then(() => {
