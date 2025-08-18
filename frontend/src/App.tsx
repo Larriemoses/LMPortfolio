@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import BlogsPage from "./pages/BlogsPage";
 import ServicesPage from "./pages/ServicesPage";
@@ -7,10 +12,20 @@ import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import NavBar from "./components/NavBar";
 
-function App() {
+function AppWrapper() {
+  const location = useLocation();
+
+  // Hide NavBar on protected routes
+  const hiddenRoutes = ["/dashboard", "/profile"];
+  const hideNav = hiddenRoutes.some((route) =>
+    location.pathname.startsWith(route)
+  );
+
   return (
-    <Router>
+    <>
+      {!hideNav && <NavBar />}
       <Routes>
         {/* Public */}
         <Route path="/" element={<HomePage />} />
@@ -37,6 +52,14 @@ function App() {
           }
         />
       </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppWrapper />
     </Router>
   );
 }
