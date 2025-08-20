@@ -9,12 +9,13 @@ interface ModalProps {
   onDownloadSeo: () => void;
 }
 
+// Improved color palette for better UI/UX
 const palette = {
-  bg: "#0d1321",
-  panel: "#1d2d44",
-  accent: "#3e5c76",
-  subtle: "#748cab",
-  text: "#f0ebd8",
+  bg: "#081729",
+  panel: "#102a43",
+  accent: "#00a8cc",
+  subtle: "#b7c5d3",
+  text: "#f0f4f8",
 };
 
 const modalVariants = {
