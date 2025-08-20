@@ -1,149 +1,56 @@
 // src/pages/HomePage.tsx
+
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Variants } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import {
-  Code,
-  Compass,
-  Brain,
-  Briefcase,
-  Wand,
-  Server,
-  Star,
-  Users,
-  Globe,
-  Book,
-  PenTool,
-  TrendingUp,
-  Zap,
-  ZapOff,
-  Linkedin,
-  Mail,
-  Github,
-  Download,
-} from "lucide-react";
+import { Linkedin, Mail, Github, Download } from "lucide-react";
 import TiltCard from "../components/TiltCard";
 import TestimonialCard from "../components/TestimonialCard";
 import ProjectCard from "../components/ProjectCard";
 import CertificationsCard from "../components/CertificationsCard";
 import Modal from "../components/Modal";
 import { Link } from "react-router-dom";
-
-// Color palette for the theme
-const palette = {
-  bg: "#0d1321",
-  panel: "#1d2d44",
-  accent: "#3e5c76",
-  subtle: "#748cab",
-  text: "#f0ebd8",
-};
-
-const serviceIcons: { [key: string]: React.ReactNode } = {
-  "Full-Stack Web Development": <Code size={40} />,
-  "SEO & Content Strategy": <Compass size={40} />,
-  "AI Integrations": <Brain size={40} />,
-  "Brand Storytelling": <Wand size={40} />,
-};
-
-const experienceIcons: { [key: string]: React.ReactNode } = {
-  "Business Development Executive": <Briefcase size={40} />,
-  "Jr. Content Writer (Intern)": <PenTool size={40} />,
-  "Content Writer Intern": <Book size={40} />,
-  "SEO Content Writer": <TrendingUp size={40} />,
-  "User Experience Writer": <Users size={40} />,
-  "Freelance Web Developer": <Code size={40} />,
-  "Lead Full-Stack Engineer": <Server size={40} />,
-  "Frontend Developer (Contributor)": <Globe size={40} />,
-};
-
-const skillsIcons: { [key: string]: React.ReactNode } = {
-  "React.js": <Code size={20} />,
-  TypeScript: <Code size={20} />,
-  Python: <Code size={20} />,
-  Django: <Code size={20} />,
-  "Technical SEO": <Compass size={20} />,
-  "Content Strategy": <Book size={20} />,
-  "AI Integrations": <Brain size={20} />,
-  "REST APIs": <Zap size={20} />,
-  "Tailwind CSS": <ZapOff size={20} />,
-  "Remote Collaboration": <Users size={20} />,
-  "Problem Solving": <Brain size={20} />,
-  "Cross-Functional Communication": <Users size={20} />,
-  "Brand Storytelling": <Book size={20} />,
-  JavaScript: <Code size={20} />,
-  "AI Prompt Engineer": <Brain size={20} />,
-};
+import {
+  palette,
+  serviceIcons,
+  experienceIcons,
+  skillsData,
+  capabilitiesItems,
+  allSkills,
+} from "../data/data";
 
 const HomePage: React.FC = () => {
   const [refServices, inViewServices] = useInView({
-    triggerOnce: false,
+    triggerOnce: true,
     threshold: 0.1,
   });
   const [refExperience, inViewExperience] = useInView({
-    triggerOnce: false,
+    triggerOnce: true,
     threshold: 0.1,
   });
   const [refProjects, inViewProjects] = useInView({
-    triggerOnce: false,
+    triggerOnce: true,
     threshold: 0.1,
   });
   const [refTestimonials, inViewTestimonials] = useInView({
-    triggerOnce: false,
+    triggerOnce: true,
     threshold: 0.1,
   });
   const [refCertifications, inViewCertifications] = useInView({
-    triggerOnce: false,
+    triggerOnce: true,
     threshold: 0.1,
   });
   const [refContact, inViewContact] = useInView({
-    triggerOnce: false,
+    triggerOnce: true,
     threshold: 0.1,
   });
   const [refSkills, inViewSkills] = useInView({
-    triggerOnce: false,
+    triggerOnce: true,
     threshold: 0.1,
   });
 
   const [showResumeModal, setShowResumeModal] = useState(false);
-
-  const capabilitiesItems = [
-    {
-      title: "Full-Stack Web Development",
-      subtitle: "Building robust, scalable applications",
-      icon: serviceIcons["Full-Stack Web Development"],
-      content:
-        "I design and develop end-to-end web applications using modern frameworks like React and Django, ensuring high performance, seamless user experience, and scalable architecture.",
-    },
-    {
-      title: "End-to-End SEO Content Strategy",
-      subtitle: "Content that ranks and converts",
-      icon: serviceIcons["SEO & Content Strategy"],
-      content:
-        "I develop end-to-end SEO content strategies for organic growth, from keyword research and content clustering to ranking strategies.",
-    },
-    {
-      title: "Technical SEO Audits & Optimization",
-      subtitle: "Improving site performance and discoverability",
-      icon: serviceIcons["Full-Stack Web Development"],
-      content:
-        "I specialize in technical SEO, conducting audits on sitemaps, Core Web Vitals, and PageSpeed. I ensure a clean, scalable structure and fast load times.",
-    },
-    {
-      title: "AI-Enhanced Content Workflows",
-      subtitle: "Building smarter content pipelines",
-      icon: serviceIcons["AI Integrations"],
-      content:
-        "I leverage AI tools to streamline content creation and research workflows. My process includes AI-enhanced content ideation, competitor gap analysis, and content briefs.",
-    },
-    {
-      title: "Brand Storytelling & Messaging",
-      subtitle: "Aligning content with your audience",
-      icon: serviceIcons["Brand Storytelling"],
-      content:
-        "I craft brand narratives and messaging that resonate with your Ideal Customer Profile. My work ensures your brand voice is clear and your content aligns with your buyer's journey.",
-    },
-  ];
 
   const onDownloadFullStack = () => {
     console.log("Downloading Full-Stack Resume...");
@@ -180,27 +87,6 @@ const HomePage: React.FC = () => {
       },
     },
   };
-
-  const skillsData = {
-    "Technical Skills": [
-      { name: "React.js", icon: skillsIcons["React.js"] },
-      { name: "TypeScript", icon: skillsIcons["TypeScript"] },
-      { name: "Python", icon: skillsIcons["Python"] },
-      { name: "Django", icon: skillsIcons["Django"] },
-      { name: "Technical SEO", icon: skillsIcons["Technical SEO"] },
-      { name: "Content Strategy", icon: skillsIcons["Content Strategy"] },
-      { name: "AI Integrations", icon: skillsIcons["AI Integrations"] },
-      { name: "REST APIs", icon: skillsIcons["REST APIs"] },
-      { name: "Tailwind CSS", icon: skillsIcons["Tailwind CSS"] },
-      { name: "JavaScript", icon: skillsIcons["JavaScript"] },
-      { name: "AI Prompt Engineer", icon: skillsIcons["AI Prompt Engineer"] },
-    ],
-  };
-
-  const allSkills = [
-    ...skillsData["Technical Skills"],
-    // ...skillsData["Soft Skills"],
-  ];
 
   const SkillCard = ({
     name,
@@ -239,6 +125,18 @@ const HomePage: React.FC = () => {
 
   return (
     <div style={{ background: palette.bg, minHeight: "100vh" }}>
+      {/* Head component for SEO */}
+      <head>
+        <title>Olarewaju Adebulu | Full-Stack & Technical SEO Strategist</title>
+        <meta
+          name="description"
+          content="Olarewaju Adebulu is a Full-Stack Developer and Technical SEO Strategist specializing in building high-performance web applications and creating content that ranks and converts. Learn about my projects, skills, and experience in the MERN stack, Python, and SEO."
+        />
+        <meta
+          name="keywords"
+          content="Olarewaju Adebulu, Full-Stack Developer, MERN, React, TypeScript, Django, Technical SEO, Content Strategy, AI Integration, Web Development, Portfolio"
+        />
+      </head>
       <AnimatePresence>
         <Modal
           show={showResumeModal}
@@ -266,7 +164,7 @@ const HomePage: React.FC = () => {
             className="absolute top-6 right-6 z-10"
           >
             <Link
-              to="/login"
+              to="/blogs"
               style={{
                 background: "transparent",
                 color: palette.text,
@@ -274,7 +172,7 @@ const HomePage: React.FC = () => {
               }}
               className="inline-block px-6 py-2 rounded-full font-semibold transition-transform transform hover:scale-105 border-2 border-solid text-sm"
             >
-              Write for Us
+              Blogs
             </Link>
           </motion.div>
 
@@ -303,7 +201,8 @@ const HomePage: React.FC = () => {
             style={{ color: palette.accent }}
             className="text-xl sm:text-2xl font-semibold mb-6"
           >
-            Full-Stack Developer | Technical SEO Strategist
+            Full-Stack Developer | Technical SEO Strategist | Business
+            Development
           </motion.p>
           <motion.p
             variants={itemVariants}
@@ -365,7 +264,9 @@ const HomePage: React.FC = () => {
             variants={itemVariants}
             className="flex justify-center items-center gap-2 mt-8 overflow-x-auto"
           >
-            <a
+            <motion.a
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               href="#experience"
               className="px-4 py-2 rounded-full font-semibold transition-colors whitespace-nowrap hover:bg-opacity-80"
               style={{
@@ -375,8 +276,10 @@ const HomePage: React.FC = () => {
               }}
             >
               Experience
-            </a>
-            <a
+            </motion.a>
+            <motion.a
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               href="#projects"
               className="px-4 py-2 rounded-full font-semibold transition-colors whitespace-nowrap hover:bg-opacity-80"
               style={{
@@ -386,8 +289,10 @@ const HomePage: React.FC = () => {
               }}
             >
               Projects
-            </a>
-            <a
+            </motion.a>
+            <motion.a
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               href="#certifications"
               className="px-4 py-2 rounded-full font-semibold transition-colors whitespace-nowrap hover:bg-opacity-80"
               style={{
@@ -397,7 +302,7 @@ const HomePage: React.FC = () => {
               }}
             >
               Certifications
-            </a>
+            </motion.a>
           </motion.div>
         </div>
       </motion.header>
