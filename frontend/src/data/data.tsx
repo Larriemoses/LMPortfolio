@@ -1,145 +1,165 @@
-// src/data/data.ts
+import {
+  Linkedin,
+  Github,
+  Mail,
+  FileText,
+  MousePointer2,
+  Download,
+} from "lucide-react";
 import React from "react";
-import {
-  FaReact,
-  FaNodeJs,
-  FaPython,
-  FaSass,
-  FaGitAlt,
-  FaHtml5,
-  FaCss3Alt,
-  FaJsSquare,
-  FaDatabase,
-  FaBrain,
-  FaChartLine,
-  FaUserCog,
-  FaBusinessTime,
-  FaLaptopCode,
-  FaCode,
-  FaLink,
-  FaBook,
-  FaEnvelope,
-  FaGithub,
-  FaLinkedin,
-  FaWhatsapp,
-} from "react-icons/fa";
-import {
-  SiTypescript,
-  SiDjango,
-  SiTailwindcss,
-  SiFirebase,
-  SiPostgresql,
-  SiGraphql,
-  SiNextdotjs,
-} from "react-icons/si";
-import { Briefcase, Zap, Star, TrendingUp, PenTool } from "lucide-react";
 
+// ✅ Custom Medium Icon (SVG)
+export const MediumIcon: React.FC<{ size?: number; color?: string }> = ({
+  size = 28,
+  color = "currentColor",
+}) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    fill={color}
+    viewBox="0 0 1043.63 592.71"
+  >
+    <path d="M588.67 296.36c0 163.64-131.65 296.36-294.34 296.36S0 460 0 296.36 131.65 0 294.34 0s294.33 132.72 294.33 296.36zm173.33 0c0 154.08-65.82 279.02-147 279.02s-147-124.94-147-279.02 65.82-279.01 147-279.01 147 124.94 147 279.01zm281.63 0c0 142.16-30.1 257.47-67.28 257.47s-67.28-115.31-67.28-257.47 30.1-257.46 67.28-257.46 67.28 115.31 67.28 257.46z" />
+  </svg>
+);
+
+// 🎨 Web3-Inspired Color Palette
 export const palette = {
-  bg: "#0d1321",
-  panel: "#1d2d44",
-  accent: "#3e5c76",
-  subtle: "#748cab",
-  text: "#f0ebd8",
+  primaryBg: "#0D0D0D", // deep black
+  secondaryBg: "#1A1A2E", // dark blue tint
+  accent1: "#00F5A0", // neon mint
+  accent2: "#00D9F5", // neon cyan
+  accent3: "#E94560", // pop pink/red
+  text: "#FFFFFF", // white text
+  subtle: "#B0B0B0", // grey subtle text
 };
 
-export const serviceIcons = {
-  "Full-Stack Web Development": <FaLaptopCode size={40} />,
-  "End-to-End SEO Content Strategy": <FaChartLine size={40} />,
-  "Technical SEO Audits & Optimization": <TrendingUp size={40} />, // Changed to TrendingUp
-  "AI-Enhanced Content Workflows": <FaBrain size={40} />,
-  "Brand Storytelling & Messaging": <FaBook size={40} />,
-};
-
-export const experienceIcons = {
-  "Lead Full-Stack Engineer": <FaCode size={40} />,
-  "Business Development Executive": <Briefcase size={40} />,
-  "Jr. Content Writer (Intern)": <PenTool size={40} />, // Changed to PenTool
-  "Content Writer Intern": <FaBook size={40} />,
-  "SEO Content Writer": <TrendingUp size={40} />, // Changed to TrendingUp
-  "User Experience Writer": <FaUserCog size={40} />,
-};
-
-export const skillsByNiche = {
-  development: [
-    { name: "React.js", icon: <FaReact size={24} />, color: "#61DAFB" },
-    { name: "TypeScript", icon: <SiTypescript size={24} />, color: "#3178C6" },
-    { name: "Node.js", icon: <FaNodeJs size={24} />, color: "#68A063" },
-    { name: "Django", icon: <SiDjango size={24} />, color: "#092E20" },
-    { name: "Python", icon: <FaPython size={24} />, color: "#3776AB" },
-    { name: "HTML5", icon: <FaHtml5 size={24} />, color: "#E34F26" },
-    { name: "CSS3", icon: <FaCss3Alt size={24} />, color: "#1572B6" },
-    {
-      name: "Tailwind CSS",
-      icon: <SiTailwindcss size={24} />,
-      color: "#06B6D4",
-    },
-    { name: "JavaScript", icon: <FaJsSquare size={24} />, color: "#F7DF1E" },
-    { name: "Git", icon: <FaGitAlt size={24} />, color: "#F05032" },
-    { name: "Firebase", icon: <SiFirebase size={24} />, color: "#FFCA28" },
-    { name: "PostgreSQL", icon: <SiPostgresql size={24} />, color: "#336791" },
-  ],
-  seo: [
-    { name: "Technical SEO", icon: <TrendingUp size={24} />, color: "#3498DB" },
-    {
-      name: "Content Strategy",
-      icon: <FaChartLine size={24} />,
-      color: "#2ECC71",
-    },
-    { name: "AI Tools", icon: <FaBrain size={24} />, color: "#E74C3C" },
-  ],
-};
-
-// New data structure for the navigation/contact icons
+// 🌐 Hero Section Icons
 export const heroIcons = [
   {
-    id: "experience",
-    icon: <Briefcase size={40} />,
-    color: "#2ECC71",
-    label: "Experience",
-    link: "#experience",
-  },
-  {
-    id: "projects",
-    icon: <Zap size={40} />,
-    color: "#E74C3C",
-    label: "Projects",
-    link: "#projects",
-  },
-  {
-    id: "certifications",
-    icon: <Star size={40} />,
-    color: "#FFD700",
-    label: "Certifications",
-    link: "#certifications",
-  },
-  {
-    id: "email",
-    icon: <FaEnvelope size={40} />,
-    color: "#D44638",
-    label: "Email",
-    link: "mailto:larriemoses@gmail.com",
-  },
-  {
     id: "linkedin",
-    icon: <FaLinkedin size={40} />,
-    color: "#0077B5",
+    icon: <Linkedin size={30} />,
+    color: palette.accent1,
+    link: "https://www.linkedin.com/in/olarewaju-adebulu-320184212/",
     label: "LinkedIn",
-    link: "https://www.linkedin.com/in/olarewajuadebulu",
   },
   {
     id: "github",
-    icon: <FaGithub size={40} />,
-    color: "#24292E",
+    icon: <Github size={30} />,
+    color: palette.accent2,
+    link: "https://github.com/larriemoses",
     label: "GitHub",
-    link: "https://github.com/Larriemoses",
+  },
+  {
+    id: "medium",
+    icon: <MediumIcon size={30} color={palette.accent1} />,
+    color: palette.accent1,
+    link: "https://larriemoses.medium.com",
+    label: "Medium",
+  },
+  {
+    id: "upwork",
+    icon: <MousePointer2 size={30} />,
+    color: palette.accent2,
+    link: "https://www.upwork.com/freelancers/~01ffd7d6d27c5a9d20",
+    label: "Upwork",
   },
   {
     id: "whatsapp",
-    icon: <FaWhatsapp size={40} />,
-    color: "#25D366",
-    label: "WhatsApp",
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={30}
+        height={30}
+        viewBox="0 0 448 512"
+        fill={palette.accent3}
+      >
+        <path d="M380.9 97.1C339 55.1 283.2 32 224.3 32c-59 0-114.8 23.1-156.6 65.1C25.7 139 2.6 194.8 2.6 253.7c0 45.5 13.5 89.7 39 127.9L0 480l102.2-40.2c36.1 19.8 76.7 30.2 118.1 30.2h.1c59 0 114.8-23.1 156.6-65.1 41.9-42 65-97.8 65-156.7 0-58.9-23.1-114.7-65-156.7zM224.3 438c-36.6 0-72.5-9.8-104-28.4l-7.4-4.4-60.7 23.9L76 366.2l-4.8-7.5c-23.2-36.4-35.4-78.7-35.4-121 0-118.8 96.7-215.6 215.5-215.6 57.6 0 111.7 22.4 152.4 63.1 40.6 40.6 63 94.6 63 152.1 0 118.8-96.7 215.6-215.4 215.6zm121.1-163.3c-6.6-3.3-39-19.2-45.1-21.4-6.1-2.2-10.5-3.3-14.9 3.3s-17.1 21.4-21 25.7c-3.9 4.3-7.7 4.9-14.3 1.6-39-19.2-64.6-34.1-90.2-77.3-6.8-11.7 6.8-10.9 19.2-36.2 2.1-4.3 1.1-8-0.6-11.3s-14.9-35.7-20.4-48.7c-5.4-13-10.9-11.2-14.9-11.4-3.9-0.2-8.3-0.2-12.8-0.2s-11.8 1.6-18 8c-6.2 6.2-23.6 23.1-23.6 56.4s24.2 65.4 27.6 69.9c3.3 4.3 47.6 72.7 115.4 102.1 16.1 7 28.6 11.2 38.4 14.4 16.1 3.2 30.7 3 42.2 1.8 12.8-0.6 39-15.9 44.5-31.2 5.5-15.3 5.5-28.4 3.9-31.1-1.6-2.5-6-3.9-12.6-6.6z" />
+      </svg>
+    ),
+    color: palette.accent3,
     link: "https://wa.me/2348073210004",
+    label: "WhatsApp",
+  },
+  {
+    id: "mail",
+    icon: <Mail size={30} />,
+    color: palette.accent1,
+    link: "mailto:larriemoses@gmail.com",
+    label: "Email",
+  },
+  {
+    id: "resume-seo",
+    icon: <Download size={30} />,
+    color: palette.accent2,
+    link: "/resume-seo.pdf", // Replace later
+    label: "Download SEO CV",
+  },
+  {
+    id: "resume-dev",
+    icon: <Download size={30} />,
+    color: palette.accent3,
+    link: "/resume-fullstack.pdf", // Replace later
+    label: "Download Fullstack CV",
   },
 ];
 
-export const allSkills = Object.values(skillsByNiche).flat();
+// 🏷️ Skills
+export const skills = [
+  "React.js",
+  "Next.js",
+  "Node.js",
+  "Django",
+  "Shopify",
+  "WordPress",
+  "MongoDB",
+  "SQL",
+  "TailwindCSS",
+  "Figma",
+  "Ahrefs",
+  "SEMRush",
+  "SurferSEO",
+  "Google Analytics",
+  "Google Search Console",
+];
+
+// 📂 Projects
+export const projects = [
+  {
+    id: "discount-region",
+    title: "Discount Region Store",
+    description:
+      "Built an ecommerce SEO system that achieved #1 Google ranking for primary keywords.",
+    tech: ["React", "Node.js", "SEO", "MongoDB"],
+    link: "https://discountregion.com",
+    img: "/images/projects/discount-region.png",
+  },
+  {
+    id: "clickrank",
+    title: "ClickRank.ai SEO Strategy",
+    description:
+      "Delivered a technical + on-page SEO audit that improved site performance and organic reach.",
+    tech: ["SEO", "Analytics", "WordPress"],
+    link: "#",
+    img: "/images/projects/clickrank.png",
+  },
+  {
+    id: "flowmeld",
+    title: "FlowMeld AI Orchestrator",
+    description:
+      "Developed an AI-powered productivity tool showcasing advanced system design skills.",
+    tech: ["Python", "React", "AI"],
+    link: "#",
+    img: "/images/projects/flowmeld.png",
+  },
+];
+
+// 🏷️ Blog Categories
+export const blogCategories = [
+  "SEO",
+  "Content Strategy",
+  "Web Development",
+  "AI & Tech",
+  "B2B Marketing",
+];
