@@ -8,6 +8,19 @@ import {
 } from "lucide-react";
 import React from "react";
 
+import {
+  FaReact,
+  FaNodeJs,
+  FaPython,
+  FaHtml5,
+  FaCss3Alt,
+  FaJsSquare,
+  FaWordpress,
+  FaShopify,
+  FaSearchengin,
+} from "react-icons/fa";
+import { SiDjango, SiMongodb, SiTypescript, SiNextdotjs } from "react-icons/si";
+
 // ✅ Custom Medium Icon (SVG)
 export const MediumIcon: React.FC<{ size?: number; color?: string }> = ({
   size = 28,
@@ -162,4 +175,20 @@ export const blogCategories = [
   "Web Development",
   "AI & Tech",
   "B2B Marketing",
+];
+// ✅ Skills with icons for background ticker
+export const skillsWithIcons = [
+  { name: "React.js", icon: <FaReact size={14} /> },
+  { name: "Node.js", icon: <FaNodeJs size={14} /> },
+  { name: "Python", icon: <FaPython size={14} /> },
+  { name: "Django", icon: <SiDjango size={14} /> },
+  { name: "TypeScript", icon: <SiTypescript size={14} /> },
+  { name: "Next.js", icon: <SiNextdotjs size={14} /> },
+  { name: "MongoDB", icon: <SiMongodb size={14} /> },
+  { name: "WordPress", icon: <FaWordpress size={14} /> },
+  { name: "Shopify", icon: <FaShopify size={14} /> },
+  { name: "HTML5", icon: <FaHtml5 size={14} /> },
+  { name: "CSS3", icon: <FaCss3Alt size={14} /> },
+  { name: "JavaScript", icon: <FaJsSquare size={14} /> },
+  { name: "SEO Strategy", icon: <FaSearchengin size={14} /> },
 ];
