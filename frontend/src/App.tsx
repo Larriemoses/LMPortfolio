@@ -1,9 +1,9 @@
+// src/App.tsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./theme/ThemeProvider";
-import Navbar from "./components/layout/Navbar";
 
 import HomePage from "./pages/HomePage";
-import BlogsPage from "./pages/BlogsPage";
+import BlogsPage from "./pages/BlogPage";
 import ServicesPage from "./pages/ServicesPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -15,7 +15,6 @@ function App() {
   return (
     <ThemeProvider>
       <Router>
-        <Navbar />
         <Routes>
           {/* Public */}
           <Route path="/" element={<HomePage />} />

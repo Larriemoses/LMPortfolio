@@ -1,47 +1,66 @@
-export const projects = [
+// src/data/projects.ts
+
+export interface Project {
+  id: string;
+  title: string;
+  description: string;
+  tech: string[];
+  link?: string;
+  github?: string;
+  demo?: string;
+  img?: string;
+  featured?: boolean;
+}
+
+export const projects: Project[] = [
   {
-    id: 1,
-    title: "Project Nova",
+    id: "discount-region",
+    title: "Discount Region Store",
     description:
-      "A decentralized application for secure data sharing built on the Ethereum blockchain.",
-    image: "https://your-image-cdn.com/project-nova-image.jpg",
-    link: "https://github.com/yourprofile/project-nova",
-    techStack: ["React.js", "Node.js", "Solidity"],
-    metrics: ["100% Secure", "200+ Active Users"],
-    categories: ["Development"],
+      "Built an ecommerce SEO system that achieved #1 Google ranking for primary keywords.",
+    tech: ["React", "Node.js", "SEO", "MongoDB"],
+    link: "https://discountregion.com",
+    github: "https://github.com/Larriemoses/Discount-Center",
+    img: "/images/projects/discount-region.png",
+    featured: true,
   },
   {
-    id: 2,
-    title: "Cosmic Blog",
+    id: "clickrank",
+    title: "ClickRank.ai SEO Strategy",
     description:
-      "A full-stack MERN blog platform with a content management system and user authentication.",
-    image: "https://your-image-cdn.com/cosmic-blog-image.jpg",
-    link: "https://github.com/yourprofile/cosmic-blog",
-    techStack: ["React.js", "Node.js", "Express.js", "MongoDB"],
-    metrics: ["220% Organic Traffic Growth", "#1 Keyword Ranking"],
-    categories: ["Content", "Development"],
+      "Delivered a technical + on-page SEO audit that improved site performance and organic reach.",
+    tech: ["SEO", "Analytics", "WordPress"],
+    link: "#",
+    img: "/images/projects/clickrank.png",
+    featured: true,
   },
   {
-    id: 3,
-    title: "Quantum Landing Page",
+    id: "flowmeld",
+    title: "FlowMeld AI Orchestrator",
     description:
-      "A responsive and animated landing page for a Web3 startup, focusing on performance and modern UI/UX.",
-    image: "https://your-image-cdn.com/quantum-landing-page.jpg",
-    link: "https://github.com/yourprofile/quantum-landing-page",
-    techStack: ["React.js", "Tailwind CSS", "Framer Motion"],
-    metrics: ["60% Traffic Growth", "4.8s Page Load Time"],
-    categories: ["Development", "SEO"],
+      "Developed an AI-powered productivity tool showcasing advanced system design skills.",
+    tech: ["Python", "React", "AI"],
+    github: "https://github.com/Larriemoses/FlowMeld",
+    img: "/images/projects/flowmeld.png",
+    featured: true,
   },
   {
-    id: 4,
-    title: "SEO Strategy Blueprint",
+    id: "lmportfolio",
+    title: "LMPortfolio",
     description:
-      "A comprehensive SEO content strategy developed for a B2B SaaS client, leading to significant market share.",
-    image: "https://your-image-cdn.com/seo-blueprint.jpg",
-    link: "/case-studies/seo-blueprint",
-    techStack: ["Ahrefs", "SEMrush", "SurferSEO"],
-    metrics: ["#1 SERP Position", "150+ Target Keywords"],
-    categories: ["SEO", "Content"],
+      "My personal portfolio site built with TypeScript and Tailwind.",
+    tech: ["TypeScript", "Tailwind", "Vite"],
+    github: "https://github.com/Larriemoses/LMPortfolio",
+    demo: "https://lmportfolio.vercel.app",
+    img: "/images/projects/lmportfolio.png",
   },
-  // Add more projects with their respective metrics and categories
+  {
+    id: "sendme",
+    title: "SendMe Frontend",
+    description:
+      "Contributed to a logistics platform frontend using React and REST APIs.",
+    tech: ["React", "REST", "SCSS"],
+    github: "#",
+    img: "/images/projects/sendme.png",
+  },
 ];
