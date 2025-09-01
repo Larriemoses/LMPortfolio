@@ -1,86 +1,71 @@
-// src/components/AboutMe.tsx
+// src/components/About.tsx
 import React from "react";
 import { motion } from "framer-motion";
-import { palette } from "../data/data";
 
-const AboutMe: React.FC = () => {
+const About: React.FC = () => {
   return (
     <section
       id="about"
-      className="w-full min-h-screen flex items-center justify-center px-6 md:px-12 py-20"
-      style={{ backgroundColor: palette.secondaryBg }}
+      className="snap-start min-h-screen flex items-center justify-center bg-[#0D0D0D] px-6 md:px-20"
     >
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        {/* Left: Profile Image */}
-        <motion.img
-          src="https://res.cloudinary.com/dvl2r3bdw/image/upload/v1755525952/1749898239122_v2xyue.jpg"
-          alt="Olarewaju Adebulu"
-          className="w-72 h-72 md:w-96 md:h-96 rounded-xl object-cover shadow-lg mx-auto"
-          whileHover={{ scale: 1.05 }}
-        />
-
-        {/* Right: About Content */}
-        <div className="space-y-6 text-center md:text-left">
-          <motion.h2
-            className="text-3xl md:text-4xl font-bold"
-            style={{ color: palette.text }}
-            whileInView={{ y: [50, 0], opacity: [0, 1] }}
-            transition={{ duration: 0.8 }}
-          >
+      <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        {/* === Left: Intro === */}
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          className="space-y-6"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold text-emerald-400">
             About Me
-          </motion.h2>
+          </h2>
+          <p className="text-gray-300 leading-relaxed">
+            I am{" "}
+            <span className="text-emerald-400 font-semibold">
+              Olarewaju Adebulu
+            </span>
+            , a passionate{" "}
+            <span className="text-indigo-400">Full Stack Developer</span> and{" "}
+            <span className="text-indigo-400">SEO Strategist</span>. I help
+            brands build scalable web platforms while creating SEO-driven
+            strategies that boost organic growth. My work bridges{" "}
+            <span className="text-emerald-400">technology</span> and{" "}
+            <span className="text-emerald-400">marketing</span> to deliver real
+            business results.
+          </p>
+          <p className="text-gray-400">
+            With years of experience, I have worked with B2B, SaaS, and Fintech
+            clients to improve visibility, drive traffic, and scale conversions.
+          </p>
+        </motion.div>
 
-          <motion.p
-            className="text-lg leading-relaxed"
-            style={{ color: palette.subtle }}
-            whileInView={{ opacity: [0, 1] }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-          >
-            I’m{" "}
-            <span style={{ color: palette.accent2 }}>Olarewaju Adebulu</span>,
-            an <strong>SEO Content Strategist</strong> and{" "}
-            <strong>Technical SEO Specialist</strong> with a passion for helping
-            B2B, SaaS, and Fintech brands scale their online visibility. With a
-            mix of{" "}
-            <span style={{ color: palette.accent1 }}>data-driven SEO</span>
-            and{" "}
-            <span style={{ color: palette.accent2 }}>content strategies</span>,
-            I create sustainable growth that attracts and converts the right
-            audience.
-          </motion.p>
-
-          <motion.p
-            className="text-md leading-relaxed"
-            style={{ color: palette.subtle }}
-            whileInView={{ opacity: [0, 1] }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-          >
-            I specialize in:
-            <br />✓ Keyword Research & Topic Clusters
-            <br />✓ Technical SEO Audits & Core Web Vitals
-            <br />✓ On-page SEO & Internal Linking
-            <br />✓ Long-form Content that Ranks
-            <br />✓ Scalable SEO Content Pipelines
-          </motion.p>
-
-          <motion.a
-            href="#contact"
-            className="inline-block mt-6 px-6 py-3 rounded-full font-semibold"
-            style={{
-              background: `linear-gradient(45deg, ${palette.accent1}, ${palette.accent2})`,
-              color: palette.text,
-            }}
-            whileHover={{
-              scale: 1.05,
-              boxShadow: `0 0 20px ${palette.accent1}`,
-            }}
-          >
-            Let’s Work Together
-          </motion.a>
-        </div>
+        {/* === Right: Quick Stats === */}
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="grid grid-cols-2 gap-6 text-center"
+        >
+          <div className="bg-[#1A1A1A] p-6 rounded-lg shadow-lg">
+            <h3 className="text-3xl font-bold text-emerald-400">3+</h3>
+            <p className="text-gray-400">Years Experience</p>
+          </div>
+          <div className="bg-[#1A1A1A] p-6 rounded-lg shadow-lg">
+            <h3 className="text-3xl font-bold text-emerald-400">25+</h3>
+            <p className="text-gray-400">Projects Completed</p>
+          </div>
+          <div className="bg-[#1A1A1A] p-6 rounded-lg shadow-lg">
+            <h3 className="text-3xl font-bold text-emerald-400">15+</h3>
+            <p className="text-gray-400">Happy Clients</p>
+          </div>
+          <div className="bg-[#1A1A1A] p-6 rounded-lg shadow-lg">
+            <h3 className="text-3xl font-bold text-emerald-400">10+</h3>
+            <p className="text-gray-400">SEO Strategies</p>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
 };
 
-export default AboutMe;
+export default About;

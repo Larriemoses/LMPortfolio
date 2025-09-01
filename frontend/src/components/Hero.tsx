@@ -11,8 +11,8 @@ const Hero: React.FC = () => {
       style={{
         backgroundColor: "#0D0D0D",
         backgroundImage: `
-          radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0),
-          radial-gradient(circle at 20px 20px, rgba(255,255,255,0.05) 1px, transparent 0)
+          radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0),
+          radial-gradient(circle at 20px 20px, rgba(255,255,255,0.04) 1px, transparent 0)
         `,
         backgroundSize: "40px 40px",
       }}
@@ -44,34 +44,59 @@ const Hero: React.FC = () => {
 
       {/* ===== Mobile Bottom Nav ===== */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-black/90 flex justify-around items-center py-3 z-50 border-t border-gray-800">
-        <Home size={22} className="text-gray-300 hover:text-emerald-400" />
-        <User size={22} className="text-gray-300 hover:text-emerald-400" />
-        <Briefcase size={22} className="text-gray-300 hover:text-emerald-400" />
-        <Layers size={22} className="text-gray-300 hover:text-emerald-400" />
-        <Mail size={22} className="text-gray-300 hover:text-emerald-400" />
+        <a href="#hero">
+          <Home size={22} className="text-gray-300 hover:text-emerald-400" />
+        </a>
+        <a href="#about">
+          <User size={22} className="text-gray-300 hover:text-emerald-400" />
+        </a>
+        <a href="#services">
+          <Briefcase
+            size={22}
+            className="text-gray-300 hover:text-emerald-400"
+          />
+        </a>
+        <a href="#projects">
+          <Layers size={22} className="text-gray-300 hover:text-emerald-400" />
+        </a>
+        <a href="#contact">
+          <Mail size={22} className="text-gray-300 hover:text-emerald-400" />
+        </a>
       </nav>
 
       {/* ===== Hero Content ===== */}
       <div className="w-full flex flex-col md:flex-row items-center justify-center gap-10 md:gap-20 px-6 md:px-20 md:pl-28 pb-20 md:pb-0">
         {/* === Image with Rings & Orbiting Balls === */}
         <div className="relative flex justify-center items-center order-1 md:order-2">
-          {/* Rings (closer to image now) */}
-          <div className="absolute rounded-full w-72 h-72 sm:w-80 sm:h-80 md:w-[22rem] md:h-[22rem] border border-emerald-400/40" />
-          <div className="absolute rounded-full w-80 h-80 sm:w-96 sm:h-96 md:w-[26rem] md:h-[26rem] border border-indigo-400/30" />
+          {/* Rings */}
+          <div className="absolute rounded-full w-72 h-72 sm:w-80 sm:h-80 md:w-[21rem] md:h-[21rem] border border-emerald-400/40" />
+          <div className="absolute rounded-full w-80 h-80 sm:w-96 sm:h-96 md:w-[24rem] md:h-[24rem] border border-indigo-400/30" />
 
-          {/* Orbiting Balls */}
+          {/* Orbiting Ball 1 */}
           <motion.div
-            className="absolute w-4 h-4 bg-gray-200 rounded-full shadow-md"
-            style={{ top: "0", left: "50%", marginLeft: "-0.5rem" }}
+            className="absolute inset-0"
             animate={{ rotate: 360 }}
-            transition={{ duration: 8, ease: "linear", repeat: Infinity }}
-          />
+            transition={{ duration: 10, ease: "linear", repeat: Infinity }}
+          >
+            <div
+              className="absolute top-0 left-1/2 -ml-2 w-4 h-4 rounded-full 
+                         bg-gradient-to-r from-white to-gray-300 
+                         shadow-[0_0_15px_5px_rgba(255,255,255,0.6)]"
+            />
+          </motion.div>
+
+          {/* Orbiting Ball 2 */}
           <motion.div
-            className="absolute w-3 h-3 bg-gray-400 rounded-full shadow-md"
-            style={{ bottom: "0", left: "50%", marginLeft: "-0.5rem" }}
+            className="absolute inset-0"
             animate={{ rotate: -360 }}
-            transition={{ duration: 12, ease: "linear", repeat: Infinity }}
-          />
+            transition={{ duration: 14, ease: "linear", repeat: Infinity }}
+          >
+            <div
+              className="absolute bottom-0 left-1/2 -ml-1.5 w-3 h-3 rounded-full 
+                         bg-gradient-to-r from-emerald-300 to-white 
+                         shadow-[0_0_12px_3px_rgba(16,185,129,0.6)]"
+            />
+          </motion.div>
 
           {/* Profile Image */}
           <div className="w-56 h-56 sm:w-72 sm:h-72 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-gray-700 shadow-2xl relative z-10">

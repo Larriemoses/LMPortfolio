@@ -1,168 +1,176 @@
 // src/components/Projects.tsx
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { palette } from "../data/data";
+import { ExternalLink, Github } from "lucide-react";
 
-const seoProjects = [
+const projects = [
   {
-    title: "SEO Audit Report for ClickRank",
-    description:
-      "Comprehensive technical SEO audit covering Core Web Vitals, site structure, and performance improvements.",
-    link: "#",
-    tags: ["Technical SEO", "Audit", "Core Web Vitals"],
+    id: 1,
+    title: "Discount Region Store",
+    desc: "Built an ecommerce SEO system that achieved #1 Google ranking for primary keywords.",
+    tech: ["React", "Node.js", "SEO", "MongoDB"],
+    img: "https://res.cloudinary.com/dvl2r3bdw/image/upload/v1752103735/LOGO-ICON-1_gm3k3m.png",
+    link: "https://discountregion.com",
+    repo: "https://github.com/LarrieMoses/Discount-Center",
   },
   {
-    title: "SEO Content Strategy for SaaS Brand",
-    description:
-      "Developed keyword clusters, topic map, and long-form blog strategy to drive consistent organic traffic.",
-    link: "#",
-    tags: ["Content Strategy", "Keyword Research", "B2B SaaS"],
-  },
-  {
-    title: "On-Page Optimization for Fintech Startup",
-    description:
-      "Improved landing pages, optimized metadata, and restructured internal linking for better search visibility.",
-    link: "#",
-    tags: ["On-Page SEO", "Fintech", "Conversion Growth"],
-  },
-];
-
-const devProjects = [
-  {
+    id: 2,
     title: "Discount Center",
-    description:
-      "A responsive e-commerce web app for discount codes built with MERN stack and TypeScript.",
-    link: "#",
-    tags: ["React", "Node.js", "MongoDB"],
+    desc: "A discount coupon & affiliate hub — curated Oraimo deals with optimized SEO structure.",
+    tech: ["TypeScript", "SEO", "Next.js"],
+    img: "https://res.cloudinary.com/dvl2r3bdw/image/upload/v1752540945/image-removebg-preview_uyqjbj.png",
+    link: "https://discount-center.vercel.app",
+    repo: "https://github.com/LarrieMoses/Discount-Center",
   },
   {
-    title: "FlowMeld",
-    description:
-      "An AI-powered life and team orchestrator platform with real-time collaboration tools.",
-    link: "#",
-    tags: ["Next.js", "AI Integration", "API"],
+    id: 3,
+    title: "ClickRank.ai SEO Strategy",
+    desc: "Delivered a technical + on-page SEO audit that boosted performance & organic reach.",
+    tech: ["SEO", "Analytics", "WordPress"],
+    img: "https://res.cloudinary.com/dvl2r3bdw/image/upload/v1756739153/Screenshot_2025-07-29_172545_dmfr3w.png",
+    link: "https://docs.google.com/document/d/1-qX58EJVfmGuPpb06tUJXAz9L4bBnV_G2P-COyUtAN0/edit?tab=t.0",
+    repo: null,
   },
   {
-    title: "Eragon Coupon Page",
-    description:
-      "Dynamic coupon site for users with real-time filtering and SEO-optimized structure.",
-    link: "#",
-    tags: ["SEO-Optimized", "React", "Tailwind"],
+    id: 4,
+    title: "FlowMeld AI Orchestrator",
+    desc: "AI-powered productivity tool showcasing advanced system design & development skills.",
+    tech: ["Python", "Django", "RestFramework", "React", "AI Automation"],
+    img: "https://res.cloudinary.com/dvl2r3bdw/image/upload/v1755519745/male-programmer-working-computer-office-wall-with-hanging-reminder-stickers-developer-creating-new-software-interface-coding-programming-system-administrator-designer-character_vonh6w.png",
+    link: "https://github.com/LarrieMoses/FlowMeld",
+    repo: "https://github.com/LarrieMoses/FlowMeld",
   },
 ];
 
 const Projects: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"seo" | "dev">("seo");
-
-  const projects = activeTab === "seo" ? seoProjects : devProjects;
-
   return (
     <section
       id="projects"
-      className="w-full min-h-screen flex items-center justify-center px-6 md:px-12 py-20"
-      style={{ backgroundColor: palette.secondaryBg }}
+      className="relative snap-start min-h-screen flex items-center justify-center px-6 md:px-20 py-20 overflow-hidden"
+      style={{
+        background: "radial-gradient(circle at top, #0D0D0D, #1A1A1A 80%)",
+      }}
     >
-      <div className="max-w-6xl mx-auto text-center space-y-12">
+      {/* Animated Grid Background */}
+      <div
+        className="absolute inset-0 opacity-10 pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(90deg, #4F46E5 1px, transparent 1px),
+            linear-gradient(#10B981 1px, transparent 1px)
+          `,
+          backgroundSize: "60px 60px",
+          animation: "moveBg 25s linear infinite",
+        }}
+      />
+
+      <div className="max-w-6xl w-full relative z-10 text-center">
         {/* Title */}
         <motion.h2
-          className="text-3xl md:text-4xl font-bold"
-          style={{ color: palette.text }}
-          whileInView={{ y: [50, 0], opacity: [0, 1] }}
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
+          className="text-4xl md:text-5xl font-bold text-indigo-400"
         >
-          Selected Projects
+          Projects
         </motion.h2>
+        <p className="text-gray-400 mt-3 mb-12">
+          A showcase of SEO campaigns & full-stack projects 🚀
+        </p>
 
-        {/* Tabs */}
-        <div className="flex justify-center space-x-6">
-          <button
-            onClick={() => setActiveTab("seo")}
-            className={`px-6 py-2 rounded-full font-medium transition ${
-              activeTab === "seo"
-                ? "text-white"
-                : "text-gray-400 hover:text-white"
-            }`}
-            style={{
-              background:
-                activeTab === "seo"
-                  ? `linear-gradient(45deg, ${palette.accent1}, ${palette.accent2})`
-                  : "transparent",
-              border: `1px solid ${palette.accent1}`,
-            }}
-          >
-            SEO Projects
-          </button>
-          <button
-            onClick={() => setActiveTab("dev")}
-            className={`px-6 py-2 rounded-full font-medium transition ${
-              activeTab === "dev"
-                ? "text-white"
-                : "text-gray-400 hover:text-white"
-            }`}
-            style={{
-              background:
-                activeTab === "dev"
-                  ? `linear-gradient(45deg, ${palette.accent1}, ${palette.accent2})`
-                  : "transparent",
-              border: `1px solid ${palette.accent1}`,
-            }}
-          >
-            Dev Projects
-          </button>
-        </div>
-
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {projects.map((project, index) => (
+        {/* Projects Grid - Desktop */}
+        <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {projects.map((project, i) => (
             <motion.div
-              key={index}
-              className="p-6 rounded-xl shadow-lg text-left flex flex-col justify-between"
-              style={{ backgroundColor: palette.primaryBg }}
-              whileHover={{
-                scale: 1.05,
-                boxShadow: `0 0 20px ${palette.accent1}`,
-              }}
+              key={project.id}
+              className="relative bg-[#1A1A1A]/80 rounded-xl overflow-hidden shadow-lg border border-gray-800 hover:border-emerald-500/50 transition-all group"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: i * 0.15 }}
             >
-              <div>
-                <h3
-                  className="text-xl font-semibold mb-3"
-                  style={{ color: palette.accent2 }}
-                >
+              {/* Project Image */}
+              <div className="overflow-hidden relative">
+                <motion.img
+                  src={project.img}
+                  alt={project.title}
+                  className="w-full h-56 object-contain bg-black group-hover:scale-110 transition-transform duration-500"
+                />
+
+                {/* Hover overlay glow */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              </div>
+
+              {/* Project Info */}
+              <div className="p-6 text-left">
+                <h3 className="text-xl font-semibold text-white">
                   {project.title}
                 </h3>
-                <p className="text-md mb-4" style={{ color: palette.subtle }}>
-                  {project.description}
-                </p>
+                <p className="text-gray-400 mt-2 text-sm">{project.desc}</p>
 
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.tags.map((tag, i) => (
+                {/* Tech Tags */}
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {project.tech.map((tech, index) => (
                     <span
-                      key={i}
-                      className="px-3 py-1 rounded-full text-xs font-medium"
-                      style={{
-                        backgroundColor: palette.secondaryBg,
-                        color: palette.text,
-                        border: `1px solid ${palette.accent1}`,
-                      }}
+                      key={index}
+                      className="px-3 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
                     >
-                      {tag}
+                      {tech}
                     </span>
                   ))}
                 </div>
-              </div>
 
-              {/* CTA */}
-              <a
-                href={project.link}
-                className="mt-auto inline-block px-5 py-2 rounded-full font-semibold text-sm"
-                style={{
-                  background: `linear-gradient(45deg, ${palette.accent1}, ${palette.accent2})`,
-                  color: palette.text,
-                }}
-              >
-                View Case Study
-              </a>
+                {/* Links */}
+                <div className="flex gap-4 mt-4">
+                  {project.link && (
+                    <motion.a
+                      href={project.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-medium text-indigo-400 hover:text-emerald-400"
+                      whileHover={{ x: 5 }}
+                    >
+                      Visit <ExternalLink size={16} />
+                    </motion.a>
+                  )}
+                  {project.repo && (
+                    <motion.a
+                      href={project.repo}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-white"
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      Code <Github size={16} />
+                    </motion.a>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Projects Slider - Mobile */}
+        <div className="md:hidden flex overflow-x-auto gap-6 snap-x snap-mandatory pb-6 scrollbar-hide">
+          {projects.map((project, i) => (
+            <motion.div
+              key={project.id}
+              className="min-w-[80%] bg-[#1A1A1A]/80 rounded-xl overflow-hidden shadow-lg border border-gray-800 snap-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+            >
+              {/* Project Image */}
+              <img
+                src={project.img}
+                alt={project.title}
+                className="w-full h-48 object-contain bg-black"
+              />
+              <div className="p-4 text-left">
+                <h3 className="text-lg font-semibold text-white">
+                  {project.title}
+                </h3>
+                <p className="text-gray-400 mt-1 text-xs">{project.desc}</p>
+              </div>
             </motion.div>
           ))}
         </div>
