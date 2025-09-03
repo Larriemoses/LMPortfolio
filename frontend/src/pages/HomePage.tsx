@@ -15,7 +15,6 @@ const HomePage: React.FC = () => {
       <Services />
       <Projects />
       <Contact />
-      <Footer />
     </main>
   );
 };

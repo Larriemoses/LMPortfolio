@@ -1,15 +1,8 @@
 // src/components/Contact.tsx
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { Linkedin, Github, Mail, Phone, Globe } from "lucide-react";
 import { palette } from "../data/data";
-import {
-  FaLinkedin,
-  FaGithub,
-  FaMedium,
-  FaWhatsapp,
-  FaEnvelope,
-} from "react-icons/fa";
-import { SiUpwork } from "react-icons/si";
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -26,7 +19,6 @@ const Contact: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // 🔹 Later: send this data to your backend API
     console.log("Form submitted:", formData);
     setFormData({ name: "", email: "", message: "" });
   };
@@ -34,137 +26,118 @@ const Contact: React.FC = () => {
   return (
     <section
       id="contact"
-      className="w-full min-h-[80vh] flex items-center justify-center px-6 md:px-12 py-20"
-      style={{ backgroundColor: palette.primaryBg }}
+      className="relative w-full min-h-screen flex flex-col justify-between bg-[#0D0D0D] text-white snap-start px-6 md:px-20 py-16"
     >
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
-        {/* Left: Contact Form */}
+      {/* ===== Contact Section ===== */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+        {/* === Left: Text & Quick Links === */}
         <motion.div
-          className="space-y-6"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
+          className="space-y-6"
         >
-          <h2
-            className="text-3xl md:text-4xl font-bold"
-            style={{ color: palette.text }}
-          >
-            Get In Touch
+          <h2 className="text-3xl md:text-4xl font-bold text-emerald-400">
+            Let’s Work Together
           </h2>
-          <p style={{ color: palette.subtle }}>
-            I’d love to hear about your project. Fill out the form and I’ll get
-            back to you soon.
+          <p className="text-gray-300 max-w-md">
+            Whether you have a project in mind, want to collaborate, or just
+            want to say hi — my inbox is always open.
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <input
-              type="text"
-              name="name"
-              placeholder="Your Name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full p-3 rounded-lg"
-              style={{
-                backgroundColor: palette.secondaryBg,
-                color: palette.text,
-              }}
-              required
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Your Email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full p-3 rounded-lg"
-              style={{
-                backgroundColor: palette.secondaryBg,
-                color: palette.text,
-              }}
-              required
-            />
-            <textarea
-              name="message"
-              placeholder="Your Message"
-              value={formData.message}
-              onChange={handleChange}
-              rows={5}
-              className="w-full p-3 rounded-lg"
-              style={{
-                backgroundColor: palette.secondaryBg,
-                color: palette.text,
-              }}
-              required
-            />
-            <motion.button
-              type="submit"
-              className="px-6 py-3 rounded-full font-semibold"
-              style={{
-                background: `linear-gradient(45deg, ${palette.accent1}, ${palette.accent2})`,
-                color: palette.text,
-              }}
-              whileHover={{
-                scale: 1.1,
-                boxShadow: `0 0 20px ${palette.accent1}`,
-              }}
+          <div className="flex flex-col space-y-3">
+            <a
+              href="mailto:larriemoses@gmail.com"
+              className="flex items-center gap-3 hover:text-emerald-400 transition"
             >
-              Send Message
-            </motion.button>
-          </form>
-        </motion.div>
-
-        {/* Right: Quick Links */}
-        <motion.div
-          className="flex flex-col items-center lg:items-start space-y-6 justify-center"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-        >
-          <h3 className="text-2xl font-bold" style={{ color: palette.text }}>
-            Or connect with me directly:
-          </h3>
-          <div className="flex flex-wrap gap-6 text-3xl">
+              <Mail size={20} /> larriemoses@gmail.com
+            </a>
+            <a
+              href="tel:+2348073210004"
+              className="flex items-center gap-3 hover:text-emerald-400 transition"
+            >
+              <Phone size={20} /> +234 807 321 0004
+            </a>
             <a
               href="https://www.linkedin.com/in/olarewaju-adebulu-320184212/"
               target="_blank"
-              rel="noreferrer"
+              className="flex items-center gap-3 hover:text-emerald-400 transition"
             >
-              <FaLinkedin color="#0A66C2" />
+              <Linkedin size={20} /> LinkedIn
             </a>
             <a
               href="https://github.com/larriemoses"
               target="_blank"
-              rel="noreferrer"
+              className="flex items-center gap-3 hover:text-emerald-400 transition"
             >
-              <FaGithub color="#EAEAEA" />
+              <Github size={20} /> GitHub
             </a>
             <a
               href="https://larriemoses.medium.com"
               target="_blank"
-              rel="noreferrer"
+              className="flex items-center gap-3 hover:text-emerald-400 transition"
             >
-              <FaMedium color="#000" />
-            </a>
-            <a
-              href="https://wa.me/2348073210004"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <FaWhatsapp color="#25D366" />
-            </a>
-            <a href="mailto:larriemoses@gmail.com">
-              <FaEnvelope color="#EA4335" />
-            </a>
-            <a
-              href="https://www.upwork.com/freelancers/~01ffd7d6d27c5a9d20"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <SiUpwork color="#6fda44" />
+              <Globe size={20} /> Medium
             </a>
           </div>
         </motion.div>
+
+        {/* === Right: Contact Form === */}
+        <motion.form
+          onSubmit={handleSubmit}
+          initial={{ opacity: 0, x: 50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="space-y-4 bg-[#1A1A1A] p-6 rounded-lg shadow-lg"
+        >
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Your Name"
+            required
+            className="w-full p-3 rounded-md bg-[#0D0D0D] text-white border border-gray-700 focus:border-emerald-400 outline-none"
+          />
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Your Email"
+            required
+            className="w-full p-3 rounded-md bg-[#0D0D0D] text-white border border-gray-700 focus:border-emerald-400 outline-none"
+          />
+          <textarea
+            name="message"
+            value={formData.message}
+            onChange={handleChange}
+            rows={5}
+            placeholder="Your Message"
+            required
+            className="w-full p-3 rounded-md bg-[#0D0D0D] text-white border border-gray-700 focus:border-emerald-400 outline-none"
+          />
+          <motion.button
+            type="submit"
+            className="w-full py-3 rounded-md font-semibold bg-gradient-to-r from-emerald-500 to-indigo-600"
+            whileHover={{
+              scale: 1.05,
+              boxShadow: "0 0 15px rgba(16,185,129,0.6)",
+            }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Send Message
+          </motion.button>
+        </motion.form>
       </div>
+
+      {/* ===== Footer ===== */}
+      <footer className="mt-16 pt-8 border-t border-gray-800 text-center text-gray-400 text-sm">
+        <p>
+          © {new Date().getFullYear()} Olarewaju Adebulu — Built with ❤️ using
+          React & Tailwind
+        </p>
+      </footer>
     </section>
   );
 };
