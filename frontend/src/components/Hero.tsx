@@ -1,7 +1,7 @@
 // src/components/Hero.tsx
 import React from "react";
 import { motion } from "framer-motion";
-import { Home, User, Briefcase, Layers, Mail } from "lucide-react";
+import { Home, User, Briefcase, Layers, Mail, BadgeCheck } from "lucide-react";
 
 const Hero: React.FC = () => {
   return (
@@ -11,16 +11,16 @@ const Hero: React.FC = () => {
     >
       {/* === Mesh Background with gradient overlay === */}
       <div
-        className="absolute inset-0 opacity-20 pointer-events-none"
+        className="absolute inset-0 opacity-25 pointer-events-none"
         style={{
           backgroundImage: `
-            linear-gradient(90deg, rgba(79,70,229,0.3) 1px, transparent 1px),
-            linear-gradient(rgba(16,185,129,0.3) 1px, transparent 1px)
+            linear-gradient(90deg, rgba(79,70,229,0.35) 1px, transparent 1px),
+            linear-gradient(rgba(16,185,129,0.35) 1px, transparent 1px)
           `,
-          backgroundSize: "50px 50px",
+          backgroundSize: "45px 45px",
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/95 to-emerald-900/20 z-0" />
+      <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/90 to-emerald-900/30 z-0" />
 
       {/* ===== Desktop Left Nav ===== */}
       <nav className="hidden md:flex flex-col justify-between items-center fixed left-0 top-0 h-screen w-16 lg:w-20 bg-black/90 py-8 lg:py-12 z-30">
@@ -48,7 +48,7 @@ const Hero: React.FC = () => {
       </nav>
 
       {/* ===== Hero Content ===== */}
-      <div className="relative z-10 w-full flex flex-col md:flex-row items-center justify-center gap-8 lg:gap-20 px-4 sm:px-8 lg:px-20 lg:pl-20 pb-24 md:pb-0">
+      <div className="relative z-10 w-full flex flex-col md:flex-row items-center justify-center gap-8 lg:gap-20 px-4 sm:px-8 lg:px-20 lg:pl-20 pb-28 md:pb-0">
         {/* === Image with Orbiting Rings === */}
         <div className="relative flex justify-center items-center order-1 md:order-2">
           {/* Ring 1 with glowing ball */}
@@ -77,7 +77,7 @@ const Hero: React.FC = () => {
           <motion.div
             whileHover={{
               scale: 1.05,
-              // boxShadow: "0 0 25px rgba(16,185,129,0.6)",
+              boxShadow: "0 0 25px rgba(16,185,129,0.6)",
             }}
             className="w-40 h-40 sm:w-56 sm:h-56 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-full overflow-hidden border-4 border-gray-700 shadow-2xl relative z-20"
           >
@@ -90,33 +90,34 @@ const Hero: React.FC = () => {
         </div>
 
         {/* === Intro Content === */}
-        <div className="max-w-lg text-center md:text-left order-2 md:order-1">
+        <div className="max-w-lg text-center md:text-left order-2 md:order-1 mt-8 md:mt-0">
           <motion.h1
-            className="text-xs sm:text-sm md:text-base tracking-[0.25em] text-gray-300 mb-3"
+            className="flex items-center justify-center md:justify-start gap-2 text-xs sm:text-sm md:text-base tracking-[0.25em] text-gray-300 mb-3"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.5 }}
           >
-            Full Stack Developer • SEO Strategist
+            Olarewaju Adebulu
+            <BadgeCheck size={18} className="text-emerald-400" />
           </motion.h1>
 
           <motion.h2
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight bg-gradient-to-r from-emerald-400 to-indigo-500 bg-clip-text text-transparent"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight bg-gradient-to-r from-emerald-400 to-indigo-500 bg-clip-text text-transparent"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.8 }}
           >
-            Olarewaju Adebulu
+            SEO Content Strategist & Growth Partner
           </motion.h2>
 
           <motion.p
-            className="mt-4 text-gray-200 text-sm sm:text-base"
+            className="mt-6 text-gray-200 text-sm sm:text-base leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1.2 }}
           >
-            I build scalable applications & craft SEO strategies that drive
-            measurable growth for B2B, SaaS & Fintech brands.
+            SaaS • Fintech • B2B | Full-Stack Development • Technical SEO • AI
+            Automation
           </motion.p>
 
           <motion.a
