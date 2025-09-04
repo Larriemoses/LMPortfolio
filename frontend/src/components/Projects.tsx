@@ -46,11 +46,21 @@ const Projects: React.FC = () => {
   return (
     <section
       id="projects"
-      className="relative snap-start min-h-screen flex items-center justify-center px-6 md:px-20 py-20 overflow-hidden"
-      style={{
-        background: "radial-gradient(circle at top, #0D0D0D, #1A1A1A 80%)",
-      }}
+      className="relative snap-start min-h-screen flex items-center justify-center px-6 md:px-12 lg:px-20 py-16 bg-black overflow-hidden"
     >
+      {/* === Mesh Background === */}
+      <div
+        className="absolute inset-0 opacity-10 pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(90deg, #4F46E5 1px, transparent 1px),
+            linear-gradient(#10B981 1px, transparent 1px)
+          `,
+          backgroundSize: "60px 60px",
+          animation: "moveBg 25s linear infinite",
+        }}
+      />
+
       <div className="max-w-7xl w-full relative z-10 text-center">
         {/* Title */}
         <motion.h2
@@ -61,42 +71,52 @@ const Projects: React.FC = () => {
         >
           Projects
         </motion.h2>
-        <p className="text-gray-400 mt-3 mb-12">
+        <motion.p
+          className="text-gray-400 mt-3 mb-10"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 0.3 }}
+        >
           A showcase of SEO campaigns & full-stack projects 🚀
-        </p>
+        </motion.p>
 
         {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {projects.map((project, i) => (
             <motion.div
               key={project.id}
-              className="bg-[#1A1A1A]/80 rounded-xl overflow-hidden shadow-lg border border-gray-800 flex flex-col"
+              className="bg-[#1A1A1A]/80 rounded-lg overflow-hidden shadow-lg border border-gray-800 flex flex-col hover:border-emerald-500/50 hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
+              whileHover={{ scale: 1.02, y: -3 }}
             >
               {/* Project Image */}
-              <img
-                src={project.img}
-                alt={project.title}
-                className="w-full h-48 md:h-56 object-contain bg-black"
-              />
+              <div className="w-full h-36 md:h-40 lg:h-44 bg-black flex items-center justify-center">
+                <motion.img
+                  src={project.img}
+                  alt={project.title}
+                  className="max-h-full object-contain"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.4 }}
+                />
+              </div>
 
-              {/* Project Content */}
-              <div className="p-6 text-left flex-1 flex flex-col">
-                <h3 className="text-xl font-semibold text-white">
+              {/* Content */}
+              <div className="p-4 md:p-5 flex flex-col flex-1 text-left">
+                <h3 className="text-lg md:text-xl font-semibold text-white">
                   {project.title}
                 </h3>
                 <p className="text-gray-400 mt-2 text-sm flex-1">
                   {project.desc}
                 </p>
 
-                {/* Tech Stack */}
-                <div className="flex flex-wrap gap-2 mt-4">
+                {/* Tech stack */}
+                <div className="flex flex-wrap gap-2 mt-3">
                   {project.tech.map((tech, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                      className="px-2 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
                     >
                       {tech}
                     </span>
@@ -104,16 +124,16 @@ const Projects: React.FC = () => {
                 </div>
 
                 {/* Links */}
-                <div className="flex gap-4 mt-4">
+                <div className="flex gap-4 mt-3">
                   {project.link && (
                     <motion.a
                       href={project.link}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-medium text-indigo-400 hover:text-emerald-400"
-                      whileHover={{ x: 5 }}
+                      className="inline-flex items-center gap-1 text-sm font-medium text-indigo-400 hover:text-emerald-400"
+                      whileHover={{ x: 4 }}
                     >
-                      Visit <ExternalLink size={16} />
+                      Visit <ExternalLink size={14} />
                     </motion.a>
                   )}
                   {project.repo && (
@@ -121,10 +141,10 @@ const Projects: React.FC = () => {
                       href={project.repo}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-white"
+                      className="inline-flex items-center gap-1 text-sm font-medium text-gray-400 hover:text-white"
                       whileHover={{ scale: 1.05 }}
                     >
-                      Code <Github size={16} />
+                      Code <Github size={14} />
                     </motion.a>
                   )}
                 </div>

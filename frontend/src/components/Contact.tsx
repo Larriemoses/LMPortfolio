@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Linkedin, Github, Mail, Phone, Globe } from "lucide-react";
-import { palette } from "../data/data";
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -26,10 +25,22 @@ const Contact: React.FC = () => {
   return (
     <section
       id="contact"
-      className="relative w-full min-h-screen flex flex-col justify-between bg-[#0D0D0D] text-white snap-start px-6 md:px-20 py-16"
+      className="relative w-full min-h-screen flex flex-col justify-between bg-[#0D0D0D] text-white snap-start px-6 md:px-20 py-16 overflow-hidden"
     >
-      {/* ===== Contact Section ===== */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+      {/* === Animated Mesh Background === */}
+      <div
+        className="absolute inset-0 opacity-[0.07] pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(90deg, #4F46E5 1px, transparent 1px),
+            linear-gradient(#10B981 1px, transparent 1px)
+          `,
+          backgroundSize: "60px 60px",
+          animation: "moveBg 30s linear infinite",
+        }}
+      />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto relative z-10">
         {/* === Left: Text & Quick Links === */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
@@ -45,7 +56,12 @@ const Contact: React.FC = () => {
             want to say hi — my inbox is always open.
           </p>
 
-          <div className="flex flex-col space-y-3">
+          <motion.div
+            className="flex flex-col space-y-3"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
             <a
               href="mailto:larriemoses@gmail.com"
               className="flex items-center gap-3 hover:text-emerald-400 transition"
@@ -79,7 +95,7 @@ const Contact: React.FC = () => {
             >
               <Globe size={20} /> Medium
             </a>
-          </div>
+          </motion.div>
         </motion.div>
 
         {/* === Right: Contact Form === */}
@@ -88,41 +104,39 @@ const Contact: React.FC = () => {
           initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="space-y-4 bg-[#1A1A1A] p-6 rounded-lg shadow-lg"
+          className="space-y-4 bg-[#1A1A1A]/90 p-6 md:p-8 rounded-lg shadow-xl border border-gray-800"
         >
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Your Name"
-            required
-            className="w-full p-3 rounded-md bg-[#0D0D0D] text-white border border-gray-700 focus:border-emerald-400 outline-none"
-          />
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Your Email"
-            required
-            className="w-full p-3 rounded-md bg-[#0D0D0D] text-white border border-gray-700 focus:border-emerald-400 outline-none"
-          />
-          <textarea
+          {["name", "email"].map((field, i) => (
+            <motion.input
+              key={field}
+              type={field === "email" ? "email" : "text"}
+              name={field}
+              value={formData[field as "name" | "email"]}
+              onChange={handleChange}
+              placeholder={`Your ${field === "name" ? "Name" : "Email"}`}
+              required
+              className="w-full p-3 rounded-md bg-[#0D0D0D] text-white border border-gray-700 focus:border-emerald-400 outline-none transition"
+              whileFocus={{ scale: 1.02, boxShadow: "0 0 12px #10B981" }}
+            />
+          ))}
+
+          <motion.textarea
             name="message"
             value={formData.message}
             onChange={handleChange}
             rows={5}
             placeholder="Your Message"
             required
-            className="w-full p-3 rounded-md bg-[#0D0D0D] text-white border border-gray-700 focus:border-emerald-400 outline-none"
+            className="w-full p-3 rounded-md bg-[#0D0D0D] text-white border border-gray-700 focus:border-emerald-400 outline-none transition"
+            whileFocus={{ scale: 1.01, boxShadow: "0 0 12px #10B981" }}
           />
+
           <motion.button
             type="submit"
-            className="w-full py-3 rounded-md font-semibold bg-gradient-to-r from-emerald-500 to-indigo-600"
+            className="w-full py-3 rounded-md font-semibold bg-gradient-to-r from-emerald-500 to-indigo-600 shadow-lg"
             whileHover={{
-              scale: 1.05,
-              boxShadow: "0 0 15px rgba(16,185,129,0.6)",
+              scale: 1.06,
+              boxShadow: "0 0 18px rgba(16,185,129,0.6)",
             }}
             whileTap={{ scale: 0.95 }}
           >
@@ -131,12 +145,16 @@ const Contact: React.FC = () => {
         </motion.form>
       </div>
 
-      {/* ===== Footer ===== */}
-      <footer className="mt-16 pt-8 border-t border-gray-800 text-center text-gray-400 text-sm">
-        <p>
-          © {new Date().getFullYear()} Olarewaju Adebulu — Built with ❤️ using
-          React & Tailwind
-        </p>
+      {/* === Footer === */}
+      <footer className="mt-16 pt-8 border-t border-gray-800 text-center text-gray-400 text-sm relative z-10">
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          whileHover={{ color: "#10B981", scale: 1.05 }}
+        >
+          © {new Date().getFullYear()} Olarewaju Adebulu
+        </motion.p>
       </footer>
     </section>
   );
