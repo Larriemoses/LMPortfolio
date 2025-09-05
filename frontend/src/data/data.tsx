@@ -38,14 +38,15 @@ export const MediumIcon: React.FC<{ size?: number; color?: string }> = ({
   </svg>
 );
 
-// 🎨 Clean Dark Theme Color Palette (DevSync-inspired)
+// ✅ Moved palette object to the top so it is defined before it's used
 export const palette = {
-  primaryBg: "#0D0D0D", // Deep dark background (professional & modern)
-  secondaryBg: "#1A1A1A", // Slightly lighter for contrast (cards/sections)
-  accent1: "#4F46E5", // Indigo (trustworthy, great for buttons/links)
-  accent2: "#10B981", // Emerald green (success, growth → SEO theme)
-  text: "#F9FAFB", // Off-white, readable on dark
-  subtle: "#9CA3AF", // Muted gray for secondary text
+  background: "#0D0D0D", // Deep black/charcoal
+  primaryAccent: "#00F5A0", // Neon mint green
+  secondaryAccent: "#00D9F5", // Cyan glow
+  highlightGradient: "linear-gradient(90deg, #00F5A0, #00D9F5)",
+  textPrimary: "#FFFFFF", // White
+  textSecondary: "#B0B0B0", // Light gray
+  error: "#FF4D4D",
 };
 
 // 🌐 Hero Section Icons
@@ -53,28 +54,28 @@ export const heroIcons = [
   {
     id: "linkedin",
     icon: <Linkedin size={30} />,
-    color: palette.accent1,
+    color: palette.primaryAccent,
     link: "https://www.linkedin.com/in/olarewaju-adebulu-320184212/",
     label: "LinkedIn",
   },
   {
     id: "github",
     icon: <Github size={30} />,
-    color: palette.accent2,
+    color: palette.secondaryAccent,
     link: "https://github.com/larriemoses",
     label: "GitHub",
   },
   {
     id: "medium",
-    icon: <MediumIcon size={30} color={palette.accent1} />,
-    color: palette.accent1,
+    icon: <MediumIcon size={30} color={palette.primaryAccent} />,
+    color: palette.primaryAccent,
     link: "https://larriemoses.medium.com",
     label: "Medium",
   },
   {
     id: "upwork",
     icon: <MousePointer2 size={30} />,
-    color: palette.accent2,
+    color: palette.secondaryAccent,
     link: "https://www.upwork.com/freelancers/~01ffd7d6d27c5a9d20",
     label: "Upwork",
   },
@@ -86,33 +87,33 @@ export const heroIcons = [
         width={30}
         height={30}
         viewBox="0 0 448 512"
-        fill={palette.accent2} // ✅ replaced accent3 with accent2
+        fill={palette.secondaryAccent}
       >
         <path d="M380.9 97.1C339 55.1 283.2 32 224.3 32c-59 0-114.8 23.1-156.6 65.1C25.7 139 2.6 194.8 2.6 253.7c0 45.5 13.5 89.7 39 127.9L0 480l102.2-40.2c36.1 19.8 76.7 30.2 118.1 30.2h.1c59 0 114.8-23.1 156.6-65.1 41.9-42 65-97.8 65-156.7 0-58.9-23.1-114.7-65-156.7zM224.3 438c-36.6 0-72.5-9.8-104-28.4l-7.4-4.4-60.7 23.9L76 366.2l-4.8-7.5c-23.2-36.4-35.4-78.7-35.4-121 0-118.8 96.7-215.6 215.5-215.6 57.6 0 111.7 22.4 152.4 63.1 40.6 40.6 63 94.6 63 152.1 0 118.8-96.7 215.6-215.4 215.6zm121.1-163.3c-6.6-3.3-39-19.2-45.1-21.4-6.1-2.2-10.5-3.3-14.9 3.3s-17.1 21.4-21 25.7c-3.9 4.3-7.7 4.9-14.3 1.6-39-19.2-64.6-34.1-90.2-77.3-6.8-11.7 6.8-10.9 19.2-36.2 2.1-4.3 1.1-8-0.6-11.3s-14.9-35.7-20.4-48.7c-5.4-13-10.9-11.2-14.9-11.4-3.9-0.2-8.3-0.2-12.8-0.2s-11.8 1.6-18 8c-6.2 6.2-23.6 23.1-23.6 56.4s24.2 65.4 27.6 69.9c3.3 4.3 47.6 72.7 115.4 102.1 16.1 7 28.6 11.2 38.4 14.4 16.1 3.2 30.7 3 42.2 1.8 12.8-0.6 39-15.9 44.5-31.2 5.5-15.3 5.5-28.4 3.9-31.1-1.6-2.5-6-3.9-12.6-6.6z" />
       </svg>
     ),
-    color: palette.accent2, // ✅ unified color scheme
+    color: palette.secondaryAccent,
     link: "https://wa.me/2348073210004",
     label: "WhatsApp",
   },
   {
     id: "mail",
     icon: <Mail size={30} />,
-    color: palette.accent1,
+    color: palette.primaryAccent,
     link: "mailto:larriemoses@gmail.com",
     label: "Email",
   },
   {
     id: "resume-seo",
     icon: <Download size={30} />,
-    color: palette.accent1,
+    color: palette.primaryAccent,
     link: "/resume-seo.pdf", // Replace later
     label: "Download SEO CV",
   },
   {
     id: "resume-dev",
     icon: <Download size={30} />,
-    color: palette.accent2,
+    color: palette.secondaryAccent,
     link: "/resume-fullstack.pdf", // Replace later
     label: "Download Fullstack CV",
   },
