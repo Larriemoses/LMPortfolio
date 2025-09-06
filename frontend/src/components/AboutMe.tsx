@@ -1,135 +1,113 @@
-// src/components/About.tsx
 import React from "react";
 import { motion } from "framer-motion";
-import { Award, Briefcase, Users, Globe, CheckCircle } from "lucide-react";
+import { TbTrophy, TbUsers, TbBulb } from "react-icons/tb";
+import { palette } from "../data/data";
 
-const metrics = [
-  { id: 1, icon: <Award size={28} />, value: "4+", label: "Years Experience" },
-  {
-    id: 2,
-    icon: <Briefcase size={28} />,
-    value: "50+",
-    label: "Projects Delivered",
+const sectionVariants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.8,
+      when: "beforeChildren",
+      staggerChildren: 0.3,
+    },
   },
-  { id: 3, icon: <Users size={28} />, value: "30+", label: "Clients Served" },
-  {
-    id: 4,
-    icon: <Globe size={28} />,
-    value: "15+",
-    label: "Industries Covered",
-  },
-];
+};
 
-const skills = [
-  "SEO Strategy",
-  "Technical SEO",
-  "Content Strategy",
-  "Full-Stack Development",
-  "AI Automation",
-  "Web Design (WordPress, Shopify, E-commerce, UI/UX)",
-  "Business Development",
-  "LinkedIn Profile Optimization",
-];
-
-const About: React.FC = () => {
+const AboutSection = () => {
   return (
     <section
-      id="about"
-      className="relative min-h-screen snap-center flex items-center justify-center px-6 md:px-20 py-20 bg-[#0D0D0D] text-white overflow-hidden"
+      id="about-section"
+      className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 text-white flex items-center justify-center"
+      style={{ backgroundColor: palette.background }}
     >
-      {/* Mesh Background */}
-      <div
-        className="absolute inset-0 opacity-15 pointer-events-none"
-        style={{
-          backgroundImage: `
-            linear-gradient(90deg, rgba(79,70,229,0.25) 1px, transparent 1px),
-            linear-gradient(rgba(16,185,129,0.25) 1px, transparent 1px)
-          `,
-          backgroundSize: "60px 60px",
-        }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/80 to-emerald-900/20 z-0" />
-
-      {/* Content */}
-      <div className="relative z-10 max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        {/* Left: Image */}
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center md:space-x-12">
+        {/* Left side: Image and text */}
         <motion.div
-          initial={{ opacity: 0, x: -40 }}
+          className="w-full md:w-1/2 mb-12 md:mb-0 text-center"
+          initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.8 }}
-          className="flex justify-center"
         >
-          <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-full overflow-hidden border-4 border-gray-700 shadow-2xl">
-            <img
-              src="https://res.cloudinary.com/dvl2r3bdw/image/upload/v1756482211/20250407_130820_p6ysay.png"
-              alt="Olarewaju Adebulu"
-              className="w-full h-full object-cover"
-            />
-          </div>
-        </motion.div>
-
-        {/* Right: Text */}
-        <div className="space-y-8 text-center md:text-left">
-          <motion.h2
-            className="text-3xl md:text-4xl font-bold text-emerald-400"
-            initial={{ opacity: 0, y: -20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <img
+            src="https://res.cloudinary.com/dvl2r3bdw/image/upload/v1755525952/1749898239122_v2xyue.jpg"
+            alt="Olarewaju Adebulu"
+            className="w-48 h-48 sm:w-64 sm:h-64 rounded-full object-cover mx-auto mb-6 shadow-2xl"
+            style={{ borderColor: palette.primaryAccent }}
+          />
+          <h2
+            className="text-4xl sm:text-5xl font-bold mb-4"
+            style={{ color: palette.textPrimary }}
           >
             About Me
-          </motion.h2>
-
-          {/* Story */}
-          <motion.p
-            className="text-gray-300 leading-relaxed text-sm sm:text-base md:text-lg"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+          </h2>
+          <p
+            className="text-lg md:text-xl font-light leading-relaxed"
+            style={{ color: palette.textSecondary }}
           >
-            I help <span className="text-emerald-400">B2B SaaS</span> and{" "}
-            <span className="text-emerald-400">Fintech</span> brands grow
-            through a strategic blend of{" "}
-            <span className="text-indigo-400">content strategy</span>,{" "}
-            <span className="text-indigo-400">technical SEO</span>, and{" "}
-            <span className="text-indigo-400">AI-powered optimization</span>.
-            With 4+ years of experience, I deliver solutions that combine{" "}
-            <span className="text-emerald-400">SEO expertise</span>,{" "}
-            <span className="text-emerald-400">full-stack development</span>,
-            and{" "}
-            <span className="text-emerald-400">business growth systems</span>.
-          </motion.p>
+            I am a professional who helps brands achieve sustainable,
+            compounding growth by blending technical expertise with creative
+            strategy and modern technology.
+          </p>
+        </motion.div>
 
-          {/* Metrics */}
-          <div className="grid grid-cols-2 gap-6">
-            {metrics.map((metric, i) => (
-              <motion.div
-                key={metric.id}
-                initial={{ opacity: 0, scale: 0.85 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: i * 0.2 }}
-                className="bg-[#1A1A1A]/70 p-6 rounded-lg shadow-lg border border-gray-800 flex flex-col items-center"
-              >
-                <div className="text-indigo-400 mb-2">{metric.icon}</div>
-                <h3 className="text-xl font-bold text-white">{metric.value}</h3>
-                <p className="text-gray-400 text-sm">{metric.label}</p>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Skills */}
-          <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-6">
-            {skills.map((skill, i) => (
-              <motion.span
-                key={i}
-                className="flex items-center gap-2 px-4 py-2 text-sm rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-              >
-                <CheckCircle size={16} className="text-emerald-400" />
-                {skill}
-              </motion.span>
-            ))}
+        {/* Right side: Metrics */}
+        <div className="w-full md:w-1/2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <motion.div
+              className="flex flex-col items-center justify-center p-6 rounded-lg shadow-xl cursor-pointer"
+              style={{
+                backgroundColor: "#212529",
+                border: "1px solid #4a5568",
+              }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <TbTrophy size={40} color={palette.primaryAccent} />
+              <p className="text-3xl font-bold mt-2">50+</p>
+              <p className="text-sm font-light">Projects Completed</p>
+            </motion.div>
+            <motion.div
+              className="flex flex-col items-center justify-center p-6 rounded-lg shadow-xl cursor-pointer"
+              style={{
+                backgroundColor: "#212529",
+                border: "1px solid #4a5568",
+              }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <TbUsers size={40} color={palette.primaryAccent} />
+              <p className="text-3xl font-bold mt-2">20+</p>
+              <p className="text-sm font-light">Happy Clients</p>
+            </motion.div>
+            <motion.div
+              className="flex flex-col items-center justify-center p-6 rounded-lg shadow-xl cursor-pointer"
+              style={{
+                backgroundColor: "#212529",
+                border: "1px solid #4a5568",
+              }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <TbBulb size={40} color={palette.primaryAccent} />
+              <p className="text-3xl font-bold mt-2">4+</p>
+              <p className="text-sm font-light">Years of Experience</p>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -137,4 +115,4 @@ const About: React.FC = () => {
   );
 };
 
-export default About;
+export default AboutSection;

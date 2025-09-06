@@ -1,8 +1,20 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
+import { TbBrandLinkedin, TbBrandGithub, TbBrandX } from "react-icons/tb";
+import { FaWhatsapp } from "react-icons/fa";
+import { SiUpwork } from "react-icons/si";
+import { TypeAnimation } from "react-type-animation";
 import { palette } from "../data/data";
 import ParticlesBackground from "./ParticlesBackground";
-import { ChevronDown } from "lucide-react";
+
+const brandColors = {
+  linkedin: "#0A66C2",
+  github: "#D9D9D9",
+  twitter: "#FFFFFF",
+  whatsapp: "#25D366",
+  upwork: "#6FDA44",
+};
 
 const HeroSection: React.FC = () => {
   const containerVariants = {
@@ -20,29 +32,6 @@ const HeroSection: React.FC = () => {
     visible: { opacity: 1, y: 0 },
   };
 
-  const nameVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
-  };
-
-  const buttonVariants = {
-    hover: {
-      scale: 1.05,
-      boxShadow: `0 0 10px ${palette.primaryAccent}, 0 0 20px ${palette.secondaryAccent}`,
-      transition: { duration: 0.3 },
-    },
-    tap: { scale: 0.95 },
-  };
-
-  const secondaryButtonVariants = {
-    hover: {
-      scale: 1.05,
-      boxShadow: `0 0 5px ${palette.primaryAccent}`,
-      transition: { duration: 0.3 },
-    },
-    tap: { scale: 0.95 },
-  };
-
   const bounceVariants = {
     initial: { y: 0 },
     animate: {
@@ -50,111 +39,164 @@ const HeroSection: React.FC = () => {
       transition: {
         duration: 2.5,
         repeat: Infinity,
-        repeatType: "loop",
+        repeatType: "loop" as "loop",
       },
     },
   };
 
+  const animatedSequence = [
+    "a SEO Content Strategist.",
+    1000,
+    "a Technical SEO Growth Partner.",
+    1000,
+    "a Full-Stack Developer.",
+    1000,
+    "an AI Automation Specialist.",
+    1000,
+    "a Business Dev. Specialist.",
+    1000,
+  ];
+
   return (
     <section
-      className="relative flex flex-col items-center justify-center min-h-screen p-4 text-white"
+      className="relative flex flex-col items-center justify-center min-h-screen p-4 text-white font-poppins"
       style={{ background: palette.background }}
     >
       <ParticlesBackground />
 
+      {/* Main Content */}
       <motion.div
-        className="relative z-10 flex flex-col items-center text-center max-w-6xl mx-auto"
+        className="relative z-10 flex flex-col items-center text-center max-w-4xl mx-auto space-y-4"
         initial="hidden"
         animate="visible"
         variants={containerVariants}
       >
         {/* Profile Picture */}
         <motion.div
-          className="mb-6 rounded-full overflow-hidden border-2 border-primaryAccent"
+          className="rounded-full overflow-hidden"
           variants={itemVariants}
-          style={{ boxShadow: `0 0 15px ${palette.primaryAccent}` }}
         >
           <img
             src="https://res.cloudinary.com/dvl2r3bdw/image/upload/v1755525952/1749898239122_v2xyue.jpg"
             alt="Olarewaju Adebulu"
-            width={150}
-            height={150}
+            width={200}
+            height={200}
             className="object-cover"
           />
         </motion.div>
 
         {/* Name */}
         <motion.p
-          className="text-2xl sm:text-5xl font-normal"
+          className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight"
           style={{ color: palette.textPrimary }}
-          variants={nameVariants}
+          variants={itemVariants}
         >
           Olarewaju Adebulu
         </motion.p>
 
-        {/* Headline */}
+        {/* Animated Headline */}
         <motion.h1
-          className="mt-2 text-1xl sm:text-2xl md:text-3xl font-normal leading-tight md:whitespace-nowrap"
-          style={{ color: palette.textPrimary }}
+          className="text-xl sm:text-2xl md:text-3xl font-normal leading-tight"
+          style={{ minHeight: "1.2em" }}
           variants={itemVariants}
         >
-          SEO-Driven Growth for SaaS, Fintech, and B2B Brands
+          <span style={{ color: palette.primaryAccent }}>I am</span>
+        </motion.h1>
+        <motion.h1
+          className="text-xl sm:text-2xl md:text-3xl font-normal leading-tight -mt-2 mb-4"
+          style={{ color: palette.primaryAccent }}
+          variants={itemVariants}
+        >
+          <TypeAnimation
+            sequence={animatedSequence}
+            wrapper="span"
+            speed={50}
+            repeat={Infinity}
+          />
         </motion.h1>
 
-        {/* Subheadline */}
-        <motion.p
-          className="mt-4 text-lg sm:text-xl font-light max-w-3xl"
-          style={{ color: palette.textSecondary }}
-          variants={itemVariants}
-        >
-          I help companies rank #1 on Google, scale organic traffic, and build
-          high-performing websites & applications through a proven blend of SEO
-          strategy, content marketing, and full-stack development.
-        </motion.p>
-
-        {/* Buttons */}
+        {/* Contact Icons - Centered Horizontally with Brand Colors and Hover Effect */}
         <motion.div
-          className="mt-8 flex flex-col sm:flex-row gap-4"
-          variants={itemVariants}
+          className="flex space-x-6 justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, transition: { delay: 1, duration: 1 } }}
         >
-          <motion.a
-            href="#contact"
-            className="px-8 py-4 font-semibold rounded-full text-lg transition-all duration-300 transform"
-            style={{
-              background: palette.highlightGradient,
-              color: palette.background,
-            }}
-            variants={buttonVariants}
-            whileHover="hover"
-            whileTap="tap"
+          <a
+            href="https://www.linkedin.com/in/olarewajuadebulu/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+            className="hover:scale-110 transition-transform duration-300"
           >
-            Hire Me
-          </motion.a>
-          <motion.a
-            href="#portfolio"
-            className="px-8 py-4 font-semibold rounded-full border-2 text-lg transition-all duration-300 transform"
-            style={{
-              borderColor: palette.primaryAccent,
-              color: palette.primaryAccent,
-            }}
-            variants={secondaryButtonVariants}
-            whileHover="hover"
-            whileTap="tap"
+            <TbBrandLinkedin
+              className="text-2xl sm:text-3xl"
+              color={brandColors.linkedin}
+              strokeWidth={1.5}
+            />
+          </a>
+          <a
+            href="https://upwork.com/freelancers/~01ffd7d6d27c5a9d20"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Upwork"
+            className="hover:scale-110 transition-transform duration-300"
           >
-            View My Work
-          </motion.a>
+            <SiUpwork
+              className="text-2xl sm:text-3xl"
+              color={brandColors.upwork}
+            />
+          </a>
+          <a
+            href="https://github.com/larriemoses"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+            className="hover:scale-110 transition-transform duration-300"
+          >
+            <TbBrandGithub
+              className="text-2xl sm:text-3xl"
+              color={brandColors.github}
+              strokeWidth={1.5}
+            />
+          </a>
+          <a
+            href="https://x.com/larriemoses"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Twitter (X)"
+            className="hover:scale-110 transition-transform duration-300"
+          >
+            <TbBrandX
+              className="text-2xl sm:text-3xl"
+              color={brandColors.twitter}
+              strokeWidth={1.5}
+            />
+          </a>
+          <a
+            href="https://wa.me/+2348073210004"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="WhatsApp"
+            className="hover:scale-110 transition-transform duration-300"
+          >
+            <FaWhatsapp
+              className="text-2xl sm:text-3xl"
+              color={brandColors.whatsapp}
+            />
+          </a>
         </motion.div>
       </motion.div>
 
       {/* Scroll-down arrow */}
-      <motion.div
+      <motion.a
+        href="#next-section"
         className="absolute bottom-10 z-10 cursor-pointer"
         variants={bounceVariants}
         initial="initial"
         animate="animate"
       >
         <ChevronDown size={48} style={{ color: palette.textPrimary }} />
-      </motion.div>
+      </motion.a>
     </section>
   );
 };

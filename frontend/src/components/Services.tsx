@@ -1,119 +1,307 @@
-// src/components/Services.tsx
-import React from "react";
-import { motion } from "framer-motion";
-import { Search, Code2, BarChart3, Globe, PenTool } from "lucide-react";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  FaLaptopCode,
+  FaChartLine,
+  FaRobot,
+  FaSearch,
+  FaPalette,
+  FaRocket,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
+import { palette } from "../data/data";
 
-const services = [
-  {
-    id: 1,
-    icon: <Search size={40} className="text-emerald-400" />,
-    title: "SEO Strategy",
-    desc: "Result-driven SEO strategies that boost rankings, visibility, and conversions.",
-  },
-  {
-    id: 2,
-    icon: <BarChart3 size={40} className="text-indigo-400" />,
-    title: "Technical SEO",
-    desc: "Comprehensive audits & optimizations for speed, indexing, and site health.",
-  },
-  {
-    id: 3,
-    icon: <PenTool size={40} className="text-emerald-400" />,
-    title: "Content Strategy",
-    desc: "Keyword research, topic clustering & content calendars that scale traffic.",
-  },
-  {
-    id: 4,
-    icon: <Code2 size={40} className="text-indigo-400" />,
-    title: "Full-Stack Development",
-    desc: "Scalable apps with React, Next.js, Node.js, and Django.",
-  },
-  {
-    id: 5,
-    icon: <Globe size={40} className="text-emerald-400" />,
-    title: "Web Optimization",
-    desc: "Core Web Vitals, UX, and accessibility enhancements for maximum growth.",
-  },
-];
+// Modal component
+type Service = {
+  title: string;
+  description: string;
+  fullDescription: string;
+  icon: React.ReactNode;
+  offerings: string[];
+};
 
-const Services: React.FC = () => {
+interface ServiceModalProps {
+  service: Service;
+  onClose: () => void;
+  onNext: () => void;
+  onPrevious: () => void;
+}
+
+const ServiceModal: React.FC<ServiceModalProps> = ({
+  service,
+  onClose,
+  onNext,
+  onPrevious,
+}) => {
   return (
-    <section
-      id="services"
-      className="relative snap-start min-h-screen flex items-center justify-center px-6 md:px-20 py-20 overflow-hidden"
-      style={{
-        background: "radial-gradient(circle at top, #1A1A1A, #0D0D0D 70%)",
-      }}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50"
     >
-      {/* Subtle animated grid background */}
-      <div
-        className="absolute inset-0 opacity-10 pointer-events-none"
-        style={{
-          backgroundImage: `
-            linear-gradient(90deg, #4F46E5 1px, transparent 1px),
-            linear-gradient(#10B981 1px, transparent 1px)
-          `,
-          backgroundSize: "50px 50px",
-          animation: "moveBg 20s linear infinite",
-        }}
-      />
+      {/* Previous Button */}
+      <motion.button
+        onClick={onPrevious}
+        className="absolute left-1 top-1/2 -translate-y-1/2 text-white p-2 rounded-full bg-gray-700 bg-opacity-70 hover:bg-opacity-100 hover:bg-gray-600 transition-colors z-50"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        <FaChevronLeft size={16} />
+      </motion.button>
 
-      <div className="max-w-6xl w-full text-center relative z-10">
-        {/* Section Title */}
-        <motion.h2
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-4xl md:text-5xl font-bold text-emerald-400"
+      {/* Next Button */}
+      <motion.button
+        onClick={onNext}
+        className="absolute right-1 top-1/2 -translate-y-1/2 text-white p-2 rounded-full bg-gray-700 bg-opacity-70 hover:bg-opacity-100 hover:bg-gray-600 transition-colors z-50"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        <FaChevronRight size={16} />
+      </motion.button>
+
+      {/* Modal Content */}
+      <motion.div
+        key={service.title}
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        className="relative w-11/12 max-w-sm sm:max-w-2xl bg-gray-800 p-4 sm:p-8 rounded-lg shadow-2xl overflow-y-auto max-h-[90vh]"
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-white text-2xl hover:text-gray-400 transition-colors"
         >
-          Services
-        </motion.h2>
-        <p className="text-gray-400 mt-3 mb-12">
-          Helping brands grow with SEO-driven strategies & modern web solutions.
-        </p>
-
-        {/* Service Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {services.map((service, i) => (
-            <motion.div
-              key={service.id}
-              className="bg-[#1A1A1A]/80 rounded-xl p-8 shadow-lg border border-gray-800 hover:border-emerald-500/50 transition-all flex flex-col items-center text-center"
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.6, delay: i * 0.15 }}
-            >
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                {service.icon}
-              </motion.div>
-              <h3 className="mt-4 text-xl font-semibold text-white">
-                {service.title}
-              </h3>
-              <p className="text-gray-400 mt-2 text-sm leading-relaxed">
-                {service.desc}
-              </p>
-            </motion.div>
-          ))}
+          &times;
+        </button>
+        <div className="flex flex-col items-center text-center space-y-2 mb-4">
+          <span className="mb-2" style={{ color: palette.primaryAccent }}>
+            {service.icon}
+          </span>
+          <h2
+            className="text-xl sm:text-3xl font-bold"
+            style={{ color: palette.textPrimary }}
+          >
+            {service.title}
+          </h2>
         </div>
-
-        {/* CTA Button */}
-        <motion.a
-          href="#contact"
-          className="inline-block mt-12 px-8 py-3 rounded-full text-white font-semibold bg-gradient-to-r from-emerald-500 to-indigo-600 shadow-lg"
-          whileHover={{
-            scale: 1.06,
-            boxShadow: "0 0 20px rgba(16,185,129,0.5)",
-          }}
-          whileTap={{ scale: 0.96 }}
-        >
-          Let’s Work Together 🚀
-        </motion.a>
-      </div>
-    </section>
+        <div className="text-gray-300 space-y-4 leading-snug text-sm sm:text-base">
+          <p>{service.fullDescription}</p>
+          <p
+            className="font-bold mt-4"
+            style={{ color: palette.primaryAccent }}
+          >
+            What I Offer:
+          </p>
+          <ul className="list-disc list-inside space-y-2">
+            {service.offerings.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
-export default Services;
+// Main Services component
+const ServicesSection = () => {
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
+
+  const services = [
+    {
+      title: "SEO Strategy",
+      description:
+        "Keyword research, content clustering, and growth-focused ranking plans.",
+      fullDescription:
+        "My SEO strategy is built to generate compounding growth. I'll perform a deep analysis of your industry, competitors, and target audience to build a strategy that drives organic traffic and conversions. This isn't just about keywords; it's about building an entire content ecosystem.",
+      icon: <FaChartLine size={40} />,
+      offerings: [
+        "Comprehensive SEO Audits & Strategy",
+        "In-depth Keyword Research & Analysis",
+        "On-page and Technical SEO Optimization",
+        "Link Building & Outreach Strategies",
+        "Performance Tracking & Reporting",
+        "Competitor Analysis & Market Research",
+      ],
+    },
+    {
+      title: "Technical SEO",
+      description:
+        "Site optimization, schema, and Core Web Vitals improvement.",
+      fullDescription:
+        "A beautiful website is useless if search engines can't find it. I specialize in technical SEO to ensure your site is a clean, fast, and organized machine. From fixing crawl errors to implementing advanced schema markup, I'll optimize your site's foundation for maximum performance and visibility.",
+      icon: <FaSearch size={40} />,
+      offerings: [
+        "Technical Site Audits",
+        "Core Web Vitals Optimization",
+        "Schema Markup Implementation",
+        "Crawlability and Indexing Analysis",
+        "Mobile and Usability Optimization",
+        "Website Security Enhancements",
+      ],
+    },
+    {
+      title: "Content Marketing",
+      description: "ICP-aligned storytelling and inbound content engines.",
+      fullDescription:
+        "I create content that not only ranks high but also resonates with your Ideal Customer Profile (ICP). I'll manage the entire content lifecycle, from ideation and keyword mapping to writing, publishing, and promotion, building a powerful inbound content engine that drives leads and sales.",
+      icon: <FaRocket size={40} />,
+      offerings: [
+        "Content Strategy & Planning",
+        "Blog Post & Article Creation",
+        "Copywriting for Landing Pages",
+        "Email Marketing Campaigns",
+        "Social Media Content",
+        "Content Distribution & Promotion",
+      ],
+    },
+    {
+      title: "Web Design & UX",
+      description:
+        "WordPress, Shopify, e-commerce, and high-converting landing pages.",
+      fullDescription:
+        "I build high-converting websites and landing pages that look stunning and provide a seamless user experience. My expertise spans various platforms, including WordPress and Shopify, to create digital products that are not just beautiful but also built to grow your business.",
+      icon: <FaPalette size={40} />,
+      offerings: [
+        "Custom Web Design",
+        "User Experience (UX) Audits",
+        "Wordpress Web Design",
+        "E-commerce Solutions",
+        "Website Redesign",
+        "Landing Page Design",
+        "Shopify Store Development",
+      ],
+    },
+    {
+      title: "Full-Stack Development",
+      description: "React, Next.js, and Django for scalable applications.",
+      fullDescription:
+        "As a full-stack developer, I build scalable, robust web applications from the ground up. I leverage modern technologies like React, Next.js, and Django to create high-performing digital products that can handle growth and evolve with your business.",
+      icon: <FaLaptopCode size={40} />,
+      offerings: [
+        "Custom Web Application Development",
+        "API Integration & Development",
+        "Database Management",
+        "Backend and Frontend Solutions",
+        "Maintenance & Support",
+        "Web Application Development",
+      ],
+    },
+    {
+      title: "AI Automation",
+      description:
+        "Systems for content generation, workflow optimization, and data-driven growth.",
+      fullDescription:
+        "I integrate powerful AI tools into your business workflows to automate repetitive tasks, generate content at scale, and gain a competitive edge. From automating your marketing to optimizing internal processes, I'll build custom AI systems that save you time and accelerate your growth.",
+      icon: <FaRobot size={40} />,
+      offerings: [
+        "Custom AI Workflow Integration",
+        "AI-Powered Content Generation",
+        "Data Analysis & Reporting Automation",
+        "Chatbot Development",
+        "Process Optimization with AI",
+        "Whatsapp Automation",
+        "AI Chatbot Development",
+      ],
+    },
+  ];
+
+  const handleNext = () => {
+    const currentIndex = services.findIndex(
+      (s) => s.title === selectedService?.title
+    );
+    const nextIndex = (currentIndex + 1) % services.length;
+    setSelectedService(services[nextIndex]);
+  };
+
+  const handlePrevious = () => {
+    const currentIndex = services.findIndex(
+      (s) => s.title === selectedService?.title
+    );
+    const prevIndex = (currentIndex - 1 + services.length) % services.length;
+    setSelectedService(services[prevIndex]);
+  };
+
+  return (
+    <>
+      <section
+        id="services-section"
+        className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 text-white"
+        style={{ backgroundColor: palette.background }}
+      >
+        <div className="w-11/12 mx-auto max-w-screen-lg text-center h-max-content">
+          <motion.h2
+            className="text-4xl sm:text-5xl font-bold mb-12"
+            style={{ color: palette.textPrimary }}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            What I Do
+          </motion.h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 text-left">
+            {services.map((service, index) => (
+              <motion.div
+                key={index}
+                className="flex flex-col items-center text-center p-6 rounded-xl shadow-xl space-y-4 cursor-pointer"
+                style={{
+                  backgroundColor: "#212529",
+                  border: "1px solid #4a5568",
+                  color: palette.primaryAccent,
+                }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5 }}
+              >
+                {service.icon}
+                <h3
+                  className="text-xl font-bold leading-snug"
+                  style={{ color: palette.textPrimary }}
+                >
+                  {service.title}
+                </h3>
+                <p
+                  className="text-base font-light mb-4 leading-snug"
+                  style={{ color: palette.textSecondary }}
+                >
+                  {service.description}
+                </p>
+                <motion.button
+                  onClick={() => setSelectedService(service)}
+                  className="mt-auto py-2 px-6 rounded-full font-semibold transition-colors duration-300"
+                  style={{
+                    backgroundColor: palette.primaryAccent,
+                    color: palette.background,
+                  }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  View More →
+                </motion.button>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <AnimatePresence>
+        {selectedService && (
+          <ServiceModal
+            service={selectedService}
+            onClose={() => setSelectedService(null)}
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+          />
+        )}
+      </AnimatePresence>
+    </>
+  );
+};
+
+export default ServicesSection;

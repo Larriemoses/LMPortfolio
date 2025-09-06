@@ -9,7 +9,7 @@ export default defineConfig({
     tailwindcss(), // Correctly handles Tailwind CSS
     nodePolyfills({
       // ✅ Fixes the "process is not defined" error
-      globals: true,
+      // globals: true,
       protocolImports: true,
     }),
   ],

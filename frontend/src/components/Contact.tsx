@@ -1,163 +1,190 @@
-// src/components/Contact.tsx
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { Linkedin, Github, Mail, Phone, Globe } from "lucide-react";
+import { FaLinkedin, FaTwitter, FaGithub, FaEnvelope } from "react-icons/fa";
+import { palette } from "../data/data";
 
-const Contact: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
-    setFormData({ name: "", email: "", message: "" });
-  };
-
+const ContactSection = () => {
   return (
     <section
-      id="contact"
-      className="relative w-full min-h-screen flex flex-col justify-between bg-[#0D0D0D] text-white snap-start px-6 md:px-20 py-16 overflow-hidden"
+      id="contact-section"
+      className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 text-white"
+      style={{ backgroundColor: palette.background }}
     >
-      {/* === Animated Mesh Background === */}
-      <div
-        className="absolute inset-0 opacity-[0.07] pointer-events-none"
-        style={{
-          backgroundImage: `
-            linear-gradient(90deg, #4F46E5 1px, transparent 1px),
-            linear-gradient(#10B981 1px, transparent 1px)
-          `,
-          backgroundSize: "60px 60px",
-          animation: "moveBg 30s linear infinite",
-        }}
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto relative z-10">
-        {/* === Left: Text & Quick Links === */}
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-          className="space-y-6"
+      <div className="w-11/12 mx-auto max-w-screen-lg text-center">
+        <motion.h2
+          className="text-4xl sm:text-5xl font-bold mb-12"
+          style={{ color: palette.textPrimary }}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-emerald-400">
-            Let’s Work Together
-          </h2>
-          <p className="text-gray-300 max-w-md">
-            Whether you have a project in mind, want to collaborate, or just
-            want to say hi — my inbox is always open.
-          </p>
+          Get In Touch
+        </motion.h2>
 
+        <div className="flex flex-col md:flex-row gap-12 items-start text-left">
+          {/* Contact Form */}
           <motion.div
-            className="flex flex-col space-y-3"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            className="flex-1 w-full"
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5 }}
           >
-            <a
-              href="mailto:larriemoses@gmail.com"
-              className="flex items-center gap-3 hover:text-emerald-400 transition"
+            <form
+              action="https://formspree.io/f/your-form-id"
+              method="POST"
+              className="space-y-6 p-6 rounded-lg shadow-xl"
+              style={{
+                backgroundColor: "#212529",
+                border: "1px solid #4a5568",
+              }}
             >
-              <Mail size={20} /> larriemoses@gmail.com
-            </a>
-            <a
-              href="tel:+2348073210004"
-              className="flex items-center gap-3 hover:text-emerald-400 transition"
-            >
-              <Phone size={20} /> +234 807 321 0004
-            </a>
-            <a
-              href="https://www.linkedin.com/in/olarewaju-adebulu-320184212/"
-              target="_blank"
-              className="flex items-center gap-3 hover:text-emerald-400 transition"
-            >
-              <Linkedin size={20} /> LinkedIn
-            </a>
-            <a
-              href="https://github.com/larriemoses"
-              target="_blank"
-              className="flex items-center gap-3 hover:text-emerald-400 transition"
-            >
-              <Github size={20} /> GitHub
-            </a>
-            <a
-              href="https://larriemoses.medium.com"
-              target="_blank"
-              className="flex items-center gap-3 hover:text-emerald-400 transition"
-            >
-              <Globe size={20} /> Medium
-            </a>
+              <div>
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-semibold mb-2"
+                  style={{ color: palette.primaryAccent }}
+                >
+                  Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  required
+                  className="w-full p-3 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-semibold mb-2"
+                  style={{ color: palette.primaryAccent }}
+                >
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  className="w-full p-3 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="message"
+                  className="block text-sm font-semibold mb-2"
+                  style={{ color: palette.primaryAccent }}
+                >
+                  Message
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows={4}
+                  required
+                  className="w-full p-3 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                ></textarea>
+              </div>
+              <motion.button
+                type="submit"
+                className="w-full py-3 rounded-md font-bold transition-colors duration-300"
+                style={{
+                  backgroundColor: palette.primaryAccent,
+                  color: palette.background,
+                }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Send Message
+              </motion.button>
+            </form>
           </motion.div>
-        </motion.div>
 
-        {/* === Right: Contact Form === */}
-        <motion.form
-          onSubmit={handleSubmit}
-          initial={{ opacity: 0, x: 50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="space-y-4 bg-[#1A1A1A]/90 p-6 md:p-8 rounded-lg shadow-xl border border-gray-800"
-        >
-          {["name", "email"].map((field, i) => (
-            <motion.input
-              key={field}
-              type={field === "email" ? "email" : "text"}
-              name={field}
-              value={formData[field as "name" | "email"]}
-              onChange={handleChange}
-              placeholder={`Your ${field === "name" ? "Name" : "Email"}`}
-              required
-              className="w-full p-3 rounded-md bg-[#0D0D0D] text-white border border-gray-700 focus:border-emerald-400 outline-none transition"
-              whileFocus={{ scale: 1.02, boxShadow: "0 0 12px #10B981" }}
-            />
-          ))}
-
-          <motion.textarea
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            rows={5}
-            placeholder="Your Message"
-            required
-            className="w-full p-3 rounded-md bg-[#0D0D0D] text-white border border-gray-700 focus:border-emerald-400 outline-none transition"
-            whileFocus={{ scale: 1.01, boxShadow: "0 0 12px #10B981" }}
-          />
-
-          <motion.button
-            type="submit"
-            className="w-full py-3 rounded-md font-semibold bg-gradient-to-r from-emerald-500 to-indigo-600 shadow-lg"
-            whileHover={{
-              scale: 1.06,
-              boxShadow: "0 0 18px rgba(16,185,129,0.6)",
-            }}
-            whileTap={{ scale: 0.95 }}
+          {/* Social Links */}
+          <motion.div
+            className="flex-1 w-full md:mt-0 mt-8"
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5 }}
           >
-            Send Message
-          </motion.button>
-        </motion.form>
+            <div
+              className="p-6 rounded-lg shadow-xl space-y-6"
+              style={{
+                backgroundColor: "#212529",
+                border: "1px solid #4a5568",
+              }}
+            >
+              <h3
+                className="text-2xl font-bold mb-4"
+                style={{ color: palette.textPrimary }}
+              >
+                Connect with me
+              </h3>
+              <p className="text-gray-300">
+                Feel free to connect with me on social media or send me a direct
+                message via email.
+              </p>
+              <div className="flex flex-col space-y-4">
+                <motion.a
+                  href="https://linkedin.com/in/olarewajuadebulu"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-4 text-white hover:text-gray-400 transition-colors"
+                  whileHover={{ x: 10 }}
+                >
+                  <FaLinkedin
+                    size={24}
+                    style={{ color: palette.primaryAccent }}
+                  />
+                  <span className="text-lg">LinkedIn</span>
+                </motion.a>
+                <motion.a
+                  href="https://twitter.com/larrie_moses"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-4 text-white hover:text-gray-400 transition-colors"
+                  whileHover={{ x: 10 }}
+                >
+                  <FaTwitter
+                    size={24}
+                    style={{ color: palette.primaryAccent }}
+                  />
+                  <span className="text-lg">Twitter</span>
+                </motion.a>
+                <motion.a
+                  href="https://github.com/Larriemoses"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-4 text-white hover:text-gray-400 transition-colors"
+                  whileHover={{ x: 10 }}
+                >
+                  <FaGithub
+                    size={24}
+                    style={{ color: palette.primaryAccent }}
+                  />
+                  <span className="text-lg">GitHub</span>
+                </motion.a>
+                <motion.a
+                  href="mailto:your-email@example.com"
+                  className="flex items-center space-x-4 text-white hover:text-gray-400 transition-colors"
+                  whileHover={{ x: 10 }}
+                >
+                  <FaEnvelope
+                    size={24}
+                    style={{ color: palette.primaryAccent }}
+                  />
+                  <span className="text-lg">Email</span>
+                </motion.a>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
-
-      {/* === Footer === */}
-      <footer className="mt-16 pt-8 border-t border-gray-800 text-center text-gray-400 text-sm relative z-10">
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-          whileHover={{ color: "#10B981", scale: 1.05 }}
-        >
-          © {new Date().getFullYear()} Olarewaju Adebulu
-        </motion.p>
-      </footer>
     </section>
   );
 };
 
-export default Contact;
+export default ContactSection;

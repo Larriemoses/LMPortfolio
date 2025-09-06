@@ -1,153 +1,152 @@
-// src/components/Projects.tsx
 import React from "react";
 import { motion } from "framer-motion";
-import { ExternalLink, Github } from "lucide-react";
+import {
+  FaGithub,
+  FaExternalLinkAlt,
+  FaLaptopCode,
+  FaChartLine,
+  FaRobot,
+  FaClipboardList,
+} from "react-icons/fa";
+import { palette } from "../data/data";
 
-const projects = [
+// Define the type for a project object
+interface Project {
+  title: string;
+  description: string;
+  technologies: string[];
+  githubLink?: string;
+  liveLink?: string;
+  linkText?: string;
+  icon: React.ReactNode;
+}
+
+// Data for your projects with added icons
+const projects: Project[] = [
   {
-    id: 1,
     title: "Discount Region Store",
-    desc: "Built an ecommerce SEO system that achieved #1 Google ranking for primary keywords.",
-    tech: ["React", "Node.js", "SEO", "MongoDB"],
-    img: "https://res.cloudinary.com/dvl2r3bdw/image/upload/v1752103735/LOGO-ICON-1_gm3k3m.png",
-    link: "https://discountregion.com",
-    repo: "https://github.com/LarrieMoses/Discount-Center",
+    description:
+      "An SEO-optimized e-commerce platform that achieved #1 Google rankings, demonstrating expertise in full-stack development and search engine optimization.",
+    technologies: ["React", "Next.js", "Node.js", "E-commerce", "SEO"],
+    githubLink: "https://github.com/Larriemoses/Discount-Region",
+    liveLink: "https://discountregion.com",
+    icon: <FaLaptopCode size={30} />,
   },
   {
-    id: 2,
     title: "Discount Center",
-    desc: "A discount coupon & affiliate hub — curated Oraimo deals with optimized SEO structure.",
-    tech: ["TypeScript", "SEO", "Next.js"],
-    img: "https://res.cloudinary.com/dvl2r3bdw/image/upload/v1752540945/image-removebg-preview_uyqjbj.png",
-    link: "https://discountcenter.com",
-    repo: "https://github.com/LarrieMoses/Discount-Center",
+    description:
+      "An affiliate coupon hub with an SEO-first structure, providing a curated collection of discount codes to drive organic traffic.",
+    technologies: ["TypeScript", "React", "SEO"],
+    githubLink: "https://github.com/Larriemoses/Discount-Center",
+    liveLink: "https://discountcenter.com",
+    icon: <FaChartLine size={30} />,
   },
   {
-    id: 3,
-    title: "ClickRank.ai SEO Strategy",
-    desc: "Delivered a technical + on-page SEO audit that boosted performance & organic reach.",
-    tech: ["SEO", "Analytics", "WordPress"],
-    img: "https://res.cloudinary.com/dvl2r3bdw/image/upload/v1756739153/Screenshot_2025-07-29_172545_dmfr3w.png",
-    link: "https://docs.google.com/document/d/1-qX58EJVfmGuPpb06tUJXAz9L4bBnV_G2P-COyUtAN0/edit?tab=t.0",
-    repo: null,
+    title: "ClickRank.ai SEO Audit",
+    description:
+      "An advanced technical and on-page SEO strategy and audit that significantly boosted a client's organic reach and search rankings.",
+    technologies: ["Technical SEO", "On-page SEO", "Audit"],
+    liveLink:
+      "https://docs.google.com/document/d/1-qX58EJVfmGuPpb06tUJXAz9L4bBnV_G2P-COyUtAN0/edit?tab=t.0",
+    linkText: "Audit Report",
+    icon: <FaClipboardList size={30} />,
   },
   {
-    id: 4,
     title: "FlowMeld AI Orchestrator",
-    desc: "AI-powered productivity tool showcasing advanced system design & development skills.",
-    tech: ["Python", "React", "AI"],
-    img: "https://res.cloudinary.com/dvl2r3bdw/image/upload/v1755519745/male-programmer-working-computer-office-wall-with-hanging-reminder-stickers-developer-creating-new-software-interface-coding-programming-system-administrator-designer-character_vonh6w.png",
-    link: "https://github.com/LarrieMoses/FlowMeld",
-    repo: "https://github.com/LarrieMoses/FlowMeld",
+    description:
+      "A productivity tool that showcases AI automation and robust React system design, built to streamline workflows for teams and individuals.",
+    technologies: ["React", "Python", "AI Automation"],
+    githubLink: "https://github.com/Larriemoses/FlowMeld",
+    icon: <FaRobot size={30} />,
   },
 ];
 
-const Projects: React.FC = () => {
+const ProjectsSection = () => {
   return (
     <section
-      id="projects"
-      className="relative snap-start min-h-screen flex items-center justify-center px-6 md:px-12 lg:px-20 py-16 bg-black overflow-hidden"
+      id="projects-section"
+      className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 text-white min-h-[90vh] md:h-[90vh] flex flex-col justify-center"
+      style={{ backgroundColor: palette.background }}
     >
-      {/* === Mesh Background === */}
-      <div
-        className="absolute inset-0 opacity-10 pointer-events-none"
-        style={{
-          backgroundImage: `
-            linear-gradient(90deg, #4F46E5 1px, transparent 1px),
-            linear-gradient(#10B981 1px, transparent 1px)
-          `,
-          backgroundSize: "60px 60px",
-          animation: "moveBg 25s linear infinite",
-        }}
-      />
-
-      <div className="max-w-7xl w-full relative z-10 text-center">
-        {/* Title */}
+      <div className="w-11/12 mx-auto max-w-screen-lg text-center h-max-content">
         <motion.h2
-          initial={{ opacity: 0, y: -20 }}
+          className="text-4xl sm:text-5xl font-bold mb-12"
+          style={{ color: palette.textPrimary }}
+          initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-4xl md:text-5xl font-bold text-indigo-400"
+          viewport={{ once: true, amount: 0.2 }}
         >
-          Projects
+          My Projects
         </motion.h2>
-        <motion.p
-          className="text-gray-400 mt-3 mb-10"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.3 }}
-        >
-          A showcase of SEO campaigns & full-stack projects 🚀
-        </motion.p>
 
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {projects.map((project, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+          {projects.map((project, index) => (
             <motion.div
-              key={project.id}
-              className="bg-[#1A1A1A]/80 rounded-lg overflow-hidden shadow-lg border border-gray-800 flex flex-col hover:border-emerald-500/50 hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all"
-              initial={{ opacity: 0, y: 30 }}
+              key={index}
+              className="bg-gray-800 rounded-xl shadow-2xl p-6 flex flex-col"
+              style={{ border: "1px solid #4a5568" }}
+              initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              whileHover={{ scale: 1.02, y: -3 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              {/* Project Image */}
-              <div className="w-full h-36 md:h-40 lg:h-44 bg-black flex items-center justify-center">
-                <motion.img
-                  src={project.img}
-                  alt={project.title}
-                  className="max-h-full object-contain"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.4 }}
-                />
-              </div>
-
-              {/* Content */}
-              <div className="p-4 md:p-5 flex flex-col flex-1 text-left">
-                <h3 className="text-lg md:text-xl font-semibold text-white">
+              <div
+                className="flex items-center space-x-4 mb-4"
+                style={{ color: palette.primaryAccent }}
+              >
+                {project.icon}
+                <h3
+                  className="text-xl font-bold"
+                  style={{ color: palette.textPrimary }}
+                >
                   {project.title}
                 </h3>
-                <p className="text-gray-400 mt-2 text-sm flex-1">
-                  {project.desc}
-                </p>
-
-                {/* Tech stack */}
-                <div className="flex flex-wrap gap-2 mt-3">
-                  {project.tech.map((tech, index) => (
-                    <span
-                      key={index}
-                      className="px-2 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Links */}
-                <div className="flex gap-4 mt-3">
-                  {project.link && (
-                    <motion.a
-                      href={project.link}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1 text-sm font-medium text-indigo-400 hover:text-emerald-400"
-                      whileHover={{ x: 4 }}
-                    >
-                      Visit <ExternalLink size={14} />
-                    </motion.a>
-                  )}
-                  {project.repo && (
-                    <motion.a
-                      href={project.repo}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1 text-sm font-medium text-gray-400 hover:text-white"
-                      whileHover={{ scale: 1.05 }}
-                    >
-                      Code <Github size={14} />
-                    </motion.a>
-                  )}
-                </div>
+              </div>
+              <p
+                className="text-base font-light mb-4 flex-grow"
+                style={{ color: palette.textSecondary }}
+              >
+                {project.description}
+              </p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {project.technologies.map((tech, techIndex) => (
+                  <span
+                    key={techIndex}
+                    className="text-xs font-semibold px-2 py-1 rounded-full"
+                    style={{
+                      backgroundColor: palette.primaryAccent,
+                      color: palette.background,
+                    }}
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+              <div className="flex justify-start space-x-4 mt-auto">
+                {project.githubLink && (
+                  <motion.a
+                    href={project.githubLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-2 text-white hover:text-gray-400 transition-colors"
+                    whileHover={{ scale: 1.1 }}
+                  >
+                    <FaGithub />
+                    <span>Code</span>
+                  </motion.a>
+                )}
+                {project.liveLink && (
+                  <motion.a
+                    href={project.liveLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-2 text-white hover:text-gray-400 transition-colors"
+                    whileHover={{ scale: 1.1 }}
+                  >
+                    <FaExternalLinkAlt />
+                    <span>{project.linkText || "Live Demo"}</span>
+                  </motion.a>
+                )}
               </div>
             </motion.div>
           ))}
@@ -157,4 +156,4 @@ const Projects: React.FC = () => {
   );
 };
 
-export default Projects;
+export default ProjectsSection;

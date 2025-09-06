@@ -40,12 +40,13 @@ export const MediumIcon: React.FC<{ size?: number; color?: string }> = ({
 
 // ✅ Moved palette object to the top so it is defined before it's used
 export const palette = {
-  background: "#0D0D0D", // Deep black/charcoal
-  primaryAccent: "#00F5A0", // Neon mint green
-  secondaryAccent: "#00D9F5", // Cyan glow
+  background: "#0D0D0D",
+  primaryAccent: "#00F5A0",
+  secondaryAccent: "#00D9F5",
+  tertiaryAccent: "#F5A300", // A new golden-orange color
   highlightGradient: "linear-gradient(90deg, #00F5A0, #00D9F5)",
-  textPrimary: "#FFFFFF", // White
-  textSecondary: "#B0B0B0", // Light gray
+  textPrimary: "#FFFFFF",
+  textSecondary: "#B0B0B0",
   error: "#FF4D4D",
 };
 
