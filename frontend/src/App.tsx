@@ -11,6 +11,10 @@ import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 
+// Newly added
+import BlogForm from "./pages/BlogForm";
+import AdminDashboard from "./pages/AdminDashboard";
+
 function App() {
   return (
     <ThemeProvider>
@@ -37,6 +41,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/new-blog"
+            element={
+              <ProtectedRoute>
+                <BlogForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
               </ProtectedRoute>
             }
           />
