@@ -1,3 +1,5 @@
+// src/routers/blog.routers.ts
+
 import { Router } from "express";
 import {
   createBlog,
@@ -5,7 +7,6 @@ import {
   getBlogById,
   updateBlog,
   deleteBlog,
-  changeBlogStatus,
   getCategories,
   incrementViews,
   toggleLike,
@@ -16,22 +17,19 @@ import { adminOnly } from "../middleware/admin.middleware";
 
 const router = Router();
 
-// ✅ Public
+// ✅ Public Routes
 router.get("/", getApprovedBlogs);
 router.get("/categories", getCategories);
-router.get("/:id", protect, getBlogById);
+router.get("/:id", getBlogById);
 
-// ✅ Authenticated
-router.post("/", protect, createBlog);
-router.put("/:id", protect, updateBlog);
-router.delete("/:id", protect, deleteBlog);
-
-// ✅ Interactions
-router.patch("/:id/views", incrementViews); // Public (anyone reading)
+// ✅ Interactions (public for views, authenticated for likes/comments)
+router.patch("/:id/views", incrementViews); // Public
 router.patch("/:id/like", protect, toggleLike); // Logged in users
 router.post("/:id/comment", protect, addComment); // Logged in users
 
-// ✅ Admin only
-router.patch("/:id/status", protect, adminOnly, changeBlogStatus);
+// ✅ Admin Only Routes (protected by adminOnly middleware)
+router.post("/", protect, adminOnly, createBlog);
+router.put("/:id", protect, adminOnly, updateBlog);
+router.delete("/:id", protect, adminOnly, deleteBlog);
 
 export default router;

@@ -1,12 +1,4 @@
-// src/data/data.tsx
-import {
-  Linkedin,
-  Github,
-  Mail,
-  FileText,
-  MousePointer2,
-  Download,
-} from "lucide-react";
+import { Linkedin, Github, Mail, MousePointer2, Download } from "lucide-react";
 import React from "react";
 
 import {
@@ -38,16 +30,23 @@ export const MediumIcon: React.FC<{ size?: number; color?: string }> = ({
   </svg>
 );
 
-// ✅ Moved palette object to the top so it is defined before it's used
+// ✅ Updated palette with all colors accessible
 export const palette = {
   background: "#0D0D0D",
   primaryAccent: "#00F5A0",
   secondaryAccent: "#00D9F5",
-  tertiaryAccent: "#F5A300", // A new golden-orange color
+  tertiaryAccent: "#F5A300",
   highlightGradient: "linear-gradient(90deg, #00F5A0, #00D9F5)",
   textPrimary: "#FFFFFF",
   textSecondary: "#B0B0B0",
   error: "#FF4D4D",
+  // Added new keys for clarity and direct use in components
+  primaryBg: "#0D0D0D",
+  secondaryBg: "#1A1A1A",
+  accent1: "#00F5A0",
+  accent2: "#00D9F5",
+  text: "#FFFFFF",
+  subtle: "#B0B0B0",
 };
 
 // 🌐 Hero Section Icons

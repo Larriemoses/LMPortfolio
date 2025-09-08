@@ -1,4 +1,5 @@
 // src/App.tsx
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./theme/ThemeProvider";
 
@@ -9,25 +10,23 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
+import BlogPreviewPage from "./pages/BlogPreviewPage";
 import ProtectedRoute from "./components/ProtectedRoute";
-
-// Newly added
-import BlogForm from "./pages/BlogForm";
-import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
   return (
     <ThemeProvider>
       <Router>
         <Routes>
-          {/* Public */}
+          {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/blogs" element={<BlogsPage />} />
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/blogs/:id" element={<BlogPreviewPage />} />
 
-          {/* Protected */}
+          {/* Protected Routes */}
           <Route
             path="/dashboard"
             element={
@@ -41,22 +40,6 @@ function App() {
             element={
               <ProtectedRoute>
                 <Profile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/new-blog"
-            element={
-              <ProtectedRoute>
-                <BlogForm />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
-                <AdminDashboard />
               </ProtectedRoute>
             }
           />

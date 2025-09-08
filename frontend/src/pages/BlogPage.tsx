@@ -1,75 +1,136 @@
 // src/pages/BlogPage.tsx
-import React, { useEffect, useState } from "react";
-import { palette } from "../data/data";
+
+import { useEffect, useState } from "react";
+import api from "../services/api";
 import { Link } from "react-router-dom";
+import { FaUser, FaEye, FaMoon, FaSun } from "react-icons/fa";
+import { useTheme } from "../theme/ThemeProvider";
 
 interface Blog {
   _id: string;
   title: string;
-  excerpt: string;
-  slug: string;
-  createdAt: string;
+  content: string;
+  author: string;
+  category: string;
+  image?: string;
+  views: number;
+  likes: string[];
+  comments: any[];
 }
 
-const BlogPage: React.FC = () => {
+const BlogPage = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/blogs`)
-      .then((res) => res.json())
-      .then((data) => setBlogs(data))
-      .catch((err) => console.error("Error fetching blogs:", err));
+    const fetchBlogs = async () => {
+      try {
+        const { data } = await api.get("/blogs");
+        setBlogs(data);
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBlogs();
   }, []);
 
-  return (
-    <section
-      className="w-full min-h-screen px-6 md:px-12 py-20"
-      style={{ backgroundColor: palette.primaryBg }}
-    >
-      <div className="max-w-6xl mx-auto">
-        <h1
-          className="text-4xl font-bold mb-10 text-center"
-          style={{ color: palette.text }}
-        >
-          Blog
-        </h1>
+  // Medium-inspired styles
+  const primaryBg = theme === "dark" ? "bg-gray-900" : "bg-white";
+  const cardBgClass = theme === "dark" ? "bg-gray-800" : "bg-gray-100";
+  const primaryText = theme === "dark" ? "text-gray-200" : "text-gray-800";
+  const secondaryText = theme === "dark" ? "text-gray-400" : "text-gray-600";
+  const buttonBg =
+    theme === "dark"
+      ? "bg-black hover:bg-gray-800"
+      : "bg-black hover:bg-gray-800";
+  const borderColor = theme === "dark" ? "border-gray-700" : "border-gray-300";
+  const fontClass = "font-serif";
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {blogs.map((blog) => (
-            <div
-              key={blog._id}
-              className="p-6 rounded-xl shadow-lg flex flex-col justify-between"
-              style={{ backgroundColor: palette.secondaryBg }}
-            >
-              <div>
-                <h2
-                  className="text-xl font-semibold mb-3"
-                  style={{ color: palette.accent2 }}
-                >
-                  {blog.title}
-                </h2>
-                <p className="text-sm mb-4" style={{ color: palette.subtle }}>
-                  {blog.excerpt?.slice(0, 150)}...
-                </p>
-                <span className="text-xs" style={{ color: palette.subtle }}>
-                  {new Date(blog.createdAt).toLocaleDateString()}
-                </span>
-              </div>
-              <Link
-                to={`/blog/${blog.slug}`}
-                className="mt-4 inline-block px-5 py-2 rounded-full font-semibold text-sm"
-                style={{
-                  background: `linear-gradient(45deg, ${palette.accent1}, ${palette.accent2})`,
-                  color: palette.text,
-                }}
-              >
-                Read More
-              </Link>
-            </div>
-          ))}
-        </div>
+  if (loading) {
+    return (
+      <div
+        className={`flex justify-center items-center min-h-screen ${primaryBg} ${primaryText}`}
+      >
+        <p>Loading blogs...</p>
       </div>
-    </section>
+    );
+  }
+
+  return (
+    <div
+      className={`${primaryBg} ${primaryText} min-h-screen p-8 transition-colors duration-500`}
+    >
+      <div className="max-w-7xl mx-auto">
+        <div className="flex justify-between items-center mb-12">
+          <h1 className={`text-4xl font-bold ${fontClass} text-center w-full`}>
+            Our Blogs
+          </h1>
+          <button
+            onClick={toggleTheme}
+            className={`p-3 rounded-full ${cardBgClass} ${primaryText} hover:opacity-80 transition-opacity`}
+          >
+            {theme === "dark" ? <FaSun size={20} /> : <FaMoon size={20} />}
+          </button>
+        </div>
+        {blogs.length === 0 ? (
+          <p className={`text-center text-lg ${secondaryText} ${fontClass}`}>
+            No blogs to display yet. Check back soon!
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {blogs.map((blog) => (
+              <div
+                key={blog._id}
+                className={`${cardBgClass} rounded-lg shadow-xl overflow-hidden flex flex-col transform transition-all duration-300 hover:scale-[1.02] border ${borderColor}`}
+              >
+                {blog.image && (
+                  <img
+                    src={blog.image}
+                    alt={blog.title}
+                    className="w-full h-48 object-cover"
+                  />
+                )}
+                <div className="p-6 flex flex-col justify-between flex-grow">
+                  <div>
+                    <h2
+                      className={`mt-2 text-2xl font-bold ${primaryText} ${fontClass}`}
+                    >
+                      {blog.title}
+                    </h2>
+                    <p className={`mt-2 text-sm ${secondaryText} ${fontClass}`}>
+                      {blog.content.substring(0, 150)}...
+                    </p>
+                  </div>
+                  <div className={`mt-4 pt-4 border-t ${borderColor}`}>
+                    <div className="flex justify-between items-center text-xs mb-4">
+                      <div
+                        className={`flex items-center space-x-4 ${secondaryText}`}
+                      >
+                        <span className={`flex items-center ${fontClass}`}>
+                          <FaEye className="mr-1" /> {blog.views} Views
+                        </span>
+                        <span className={`flex items-center ${fontClass}`}>
+                          <FaUser className="mr-1" /> {blog.author}
+                        </span>
+                      </div>
+                    </div>
+                    <Link
+                      to={`/blogs/${blog._id}`}
+                      className={`inline-block w-full text-center px-4 py-2 rounded-lg font-bold transition-colors duration-300 ${buttonBg} text-white`}
+                    >
+                      Read More
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 
