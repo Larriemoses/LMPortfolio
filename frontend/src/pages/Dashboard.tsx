@@ -9,12 +9,21 @@ import {
   FaBlog,
   FaSignOutAlt,
   FaCheckCircle,
+  FaThumbsUp,
+  FaThumbsDown,
+  FaPlus,
 } from "react-icons/fa";
 
 const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [pendingBlogs, setPendingBlogs] = useState<any[]>([]);
+  const [newBlog, setNewBlog] = useState({
+    title: "",
+    content: "",
+    category: "",
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,12 +31,16 @@ const Dashboard = () => {
       try {
         const { data } = await api.get("/users/me");
         setUser(data);
+
+        // If admin, also fetch pending blogs
+        if (data.role === "admin") {
+          const blogs = await api.get("/blogs?status=pending");
+          setPendingBlogs(blogs.data);
+        }
       } catch (error) {
-        // If there's an error (e.g., 401), navigate to login
         console.error("Failed to fetch user:", error);
         navigate("/login");
       } finally {
-        // Set loading to false regardless of success or failure
         setLoading(false);
       }
     };
@@ -39,7 +52,30 @@ const Dashboard = () => {
     navigate("/login");
   };
 
-  // Show a loading message if data is still being fetched
+  // Approve or reject blog
+  const handleApproval = async (
+    id: string,
+    status: "approved" | "rejected"
+  ) => {
+    try {
+      await api.patch(`/blogs/${id}/status`, { status });
+      setPendingBlogs((prev) => prev.filter((b) => b._id !== id));
+    } catch (error) {
+      console.error("Failed to update blog status:", error);
+    }
+  };
+
+  // Direct admin post
+  const handleAdminPost = async () => {
+    try {
+      await api.post("/blogs", { ...newBlog, status: "approved" });
+      setNewBlog({ title: "", content: "", category: "" });
+      alert("Blog posted directly!");
+    } catch (error) {
+      console.error("Failed to post blog:", error);
+    }
+  };
+
   if (loading)
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-900 text-gray-300">
@@ -47,7 +83,6 @@ const Dashboard = () => {
       </div>
     );
 
-  // If loading is complete but user is null (e.g., failed to fetch), show an error or redirect
   if (!user)
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-900 text-red-400">
@@ -63,8 +98,21 @@ const Dashboard = () => {
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 flex flex-col w-64 bg-gray-800 shadow-xl`}
       >
+        {/* Profile section */}
         <div className="flex items-center justify-between p-6">
-          <h1 className="font-bold text-xl text-blue-400">Admin Panel</h1>
+          <div className="flex items-center space-x-3">
+            <img
+              src={user.profilePic || "/default-avatar.png"}
+              alt="Profile"
+              className="w-12 h-12 rounded-full border-2 border-blue-500 object-cover"
+            />
+            <div className="hidden md:block">
+              <h1 className="font-bold text-lg text-blue-400">
+                {user.role === "admin" ? "Admin" : "User"}
+              </h1>
+              <p className="text-gray-400 text-sm">{user.name}</p>
+            </div>
+          </div>
           <button
             onClick={() => setIsSidebarOpen(false)}
             className="md:hidden text-gray-400 hover:text-white transition-colors"
@@ -72,6 +120,7 @@ const Dashboard = () => {
             <FaTimes size={24} />
           </button>
         </div>
+
         <nav className="flex-1 px-4 py-6 space-y-2">
           <a
             href="/dashboard"
@@ -103,8 +152,8 @@ const Dashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col p-6">
-        {/* Navbar for Mobile */}
+      <div className="flex-1 flex flex-col p-6 space-y-8">
+        {/* Mobile Navbar */}
         <div className="flex items-center justify-between md:hidden mb-6">
           <button
             onClick={() => setIsSidebarOpen(true)}
@@ -139,26 +188,93 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Dashboard Content (e.g., Blog Stats) */}
-        <div className="mt-10 max-w-xl w-full mx-auto p-6 bg-gray-800 rounded-2xl shadow-lg border border-gray-700">
+        {/* User Blog Summary */}
+        <div className="mt-6 max-w-xl w-full mx-auto p-6 bg-gray-800 rounded-2xl shadow-lg border border-gray-700">
           <h3 className="text-2xl font-bold text-blue-300 mb-4">
             Your Blog Summary
           </h3>
-          <p className="text-gray-400">
-            Welcome back! This is where you can see a summary of your blog
-            activities.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-            <div className="p-4 bg-gray-700 rounded-lg text-center">
-              <p className="text-xl font-bold">12</p>
-              <p className="text-sm text-gray-400">Published Blogs</p>
+          <p className="text-gray-400">Welcome back, {user.name}!</p>
+        </div>
+
+        {/* Admin Tools */}
+        {user.role === "admin" && (
+          <div className="space-y-8">
+            {/* Pending Blogs */}
+            <div className="max-w-3xl mx-auto p-6 bg-gray-800 rounded-xl shadow-lg border border-gray-700">
+              <h3 className="text-xl font-bold text-yellow-400 mb-4">
+                Pending Blogs
+              </h3>
+              {pendingBlogs.length === 0 ? (
+                <p className="text-gray-400">No pending blogs right now.</p>
+              ) : (
+                pendingBlogs.map((blog) => (
+                  <div
+                    key={blog._id}
+                    className="p-4 bg-gray-700 rounded-lg mb-4 flex justify-between items-center"
+                  >
+                    <div>
+                      <h4 className="font-bold text-blue-300">{blog.title}</h4>
+                      <p className="text-gray-400 text-sm">By {blog.author}</p>
+                    </div>
+                    <div className="flex space-x-3">
+                      <button
+                        onClick={() => handleApproval(blog._id, "approved")}
+                        className="p-2 bg-green-600 rounded-full hover:bg-green-700"
+                      >
+                        <FaThumbsUp />
+                      </button>
+                      <button
+                        onClick={() => handleApproval(blog._id, "rejected")}
+                        className="p-2 bg-red-600 rounded-full hover:bg-red-700"
+                      >
+                        <FaThumbsDown />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
-            <div className="p-4 bg-gray-700 rounded-lg text-center">
-              <p className="text-xl font-bold">450</p>
-              <p className="text-sm text-gray-400">Total Views</p>
+
+            {/* Direct Admin Post */}
+            <div className="max-w-3xl mx-auto p-6 bg-gray-800 rounded-xl shadow-lg border border-gray-700">
+              <h3 className="text-xl font-bold text-green-400 mb-4">
+                Post a Blog Directly
+              </h3>
+              <input
+                type="text"
+                placeholder="Title"
+                value={newBlog.title}
+                onChange={(e) =>
+                  setNewBlog({ ...newBlog, title: e.target.value })
+                }
+                className="w-full mb-3 p-2 rounded bg-gray-700 text-gray-100"
+              />
+              <textarea
+                placeholder="Content"
+                value={newBlog.content}
+                onChange={(e) =>
+                  setNewBlog({ ...newBlog, content: e.target.value })
+                }
+                className="w-full mb-3 p-2 rounded bg-gray-700 text-gray-100"
+              />
+              <input
+                type="text"
+                placeholder="Category"
+                value={newBlog.category}
+                onChange={(e) =>
+                  setNewBlog({ ...newBlog, category: e.target.value })
+                }
+                className="w-full mb-3 p-2 rounded bg-gray-700 text-gray-100"
+              />
+              <button
+                onClick={handleAdminPost}
+                className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg"
+              >
+                <FaPlus className="mr-2" /> Post Blog
+              </button>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

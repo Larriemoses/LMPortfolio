@@ -11,6 +11,7 @@ export const createBlog = async (req: AuthRequest, res: Response) => {
       author: req.user?.name,
       authorId: req.user?._id,
       status: isAdmin ? "approved" : "pending",
+      image: req.body.image, // ✅ support featured image
     });
     res.status(201).json(blog);
   } catch (error) {
@@ -110,7 +111,6 @@ export const changeBlogStatus = async (req: AuthRequest, res: Response) => {
       { status },
       { new: true }
     );
-
     if (!blog) return res.status(404).json({ message: "Blog not found" });
 
     res.json(blog);
@@ -126,5 +126,72 @@ export const getCategories = async (_req: AuthRequest, res: Response) => {
     res.json(categories);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch categories", error });
+  }
+};
+
+// ============================
+// 🚀 NEW FEATURES
+// ============================
+
+// @desc Increment blog views
+export const incrementViews = async (req: AuthRequest, res: Response) => {
+  try {
+    const blog = await Blog.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { views: 1 } },
+      { new: true }
+    );
+    if (!blog) return res.status(404).json({ message: "Blog not found" });
+    res.json(blog);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to increment views", error });
+  }
+};
+
+// @desc Like or unlike a blog
+export const toggleLike = async (req: AuthRequest, res: Response) => {
+  try {
+    const blog = await Blog.findById(req.params.id);
+    if (!blog) return res.status(404).json({ message: "Blog not found" });
+
+    const userId = req.user?._id;
+    if (!userId) return res.status(401).json({ message: "Not authorized" });
+
+    if (blog.likes.includes(userId)) {
+      blog.likes = blog.likes.filter(
+        (id) => id.toString() !== userId.toString()
+      );
+    } else {
+      blog.likes.push(userId);
+    }
+
+    await blog.save();
+    res.json({ likes: blog.likes.length });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to toggle like", error });
+  }
+};
+
+// @desc Add a comment to a blog
+export const addComment = async (req: AuthRequest, res: Response) => {
+  try {
+    const blog = await Blog.findById(req.params.id);
+    if (!blog) return res.status(404).json({ message: "Blog not found" });
+
+    const userId = req.user?._id;
+    if (!userId) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
+
+    blog.comments.push({
+      user: userId,
+      text: req.body.text,
+      createdAt: new Date(),
+    });
+
+    await blog.save();
+    res.status(201).json(blog.comments);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to add comment", error });
   }
 };
