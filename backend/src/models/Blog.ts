@@ -1,3 +1,5 @@
+// src/models/Blog.ts
+
 import { Schema, model, Document, Types } from "mongoose";
 
 export interface IComment {
@@ -9,11 +11,12 @@ export interface IComment {
 export interface IBlog extends Document {
   title: string;
   content: string;
+  slug: string; // ✅ New: Add slug to the interface
   author: string;
   authorId: Types.ObjectId;
   tags?: string[];
   category: string;
-  image?: string; // Featured image
+  image?: string;
   status: "pending" | "approved" | "rejected";
   views: number;
   likes: Types.ObjectId[];
@@ -35,19 +38,20 @@ const blogSchema = new Schema<IBlog>(
   {
     title: { type: String, required: true },
     content: { type: String, required: true },
+    slug: { type: String, required: true, unique: true }, // ✅ New: Add slug field to the schema
     author: { type: String, required: true },
     authorId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     tags: [{ type: String }],
     category: { type: String, required: true },
-    image: { type: String }, // ✅ featured image
+    image: { type: String },
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
-    views: { type: Number, default: 0 }, // ✅ views counter
-    likes: [{ type: Schema.Types.ObjectId, ref: "User" }], // ✅ array of user IDs
-    comments: [commentSchema], // ✅ embedded comments
+    views: { type: Number, default: 0 },
+    likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    comments: [commentSchema],
   },
   { timestamps: true }
 );

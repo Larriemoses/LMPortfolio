@@ -4,7 +4,7 @@ import { Router } from "express";
 import {
   createBlog,
   getApprovedBlogs,
-  getBlogById,
+  getBlogBySlug, // Renamed controller function
   updateBlog,
   deleteBlog,
   getCategories,
@@ -20,16 +20,16 @@ const router = Router();
 // ✅ Public Routes
 router.get("/", getApprovedBlogs);
 router.get("/categories", getCategories);
-router.get("/:id", getBlogById);
+router.get("/:slug", getBlogBySlug); // Changed from /:id to /:slug
 
 // ✅ Interactions (public for views, authenticated for likes/comments)
-router.patch("/:id/views", incrementViews); // Public
-router.patch("/:id/like", protect, toggleLike); // Logged in users
-router.post("/:id/comment", protect, addComment); // Logged in users
+router.patch("/:slug/views", incrementViews); // Changed from /:id to /:slug
+router.patch("/:slug/like", protect, toggleLike); // Changed from /:id to /:slug
+router.post("/:slug/comment", protect, addComment); // Changed from /:id to /:slug
 
 // ✅ Admin Only Routes (protected by adminOnly middleware)
 router.post("/", protect, adminOnly, createBlog);
-router.put("/:id", protect, adminOnly, updateBlog);
-router.delete("/:id", protect, adminOnly, deleteBlog);
+router.put("/:slug", protect, adminOnly, updateBlog); // Changed from /:id to /:slug
+router.delete("/:slug", protect, adminOnly, deleteBlog); // Changed from /:id to /:slug
 
 export default router;

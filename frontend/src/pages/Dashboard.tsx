@@ -2,27 +2,48 @@
 
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   FaBars,
   FaTimes,
   FaHome,
-  FaUser,
   FaBlog,
   FaSignOutAlt,
   FaPlus,
+  FaTrash,
+  FaEdit,
 } from "react-icons/fa";
+import ReactQuill from "react-quill-new"; // modern compatible package
+import "react-quill-new/dist/quill.snow.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+interface Blog {
+  _id: string;
+  title: string;
+  slug: string;
+  content: string;
+  author: string;
+  category: string;
+  image?: string;
+  views: number;
+  likes: string[];
+  comments: any[];
+  tags?: string[];
+}
 
 const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [allBlogs, setAllBlogs] = useState<any[]>([]); // To store all blogs
-  const [showPostForm, setShowPostForm] = useState(false); // New state to toggle form visibility
+  const [allBlogs, setAllBlogs] = useState<Blog[]>([]);
+  const [showPostForm, setShowPostForm] = useState(false);
+  const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
   const [newBlog, setNewBlog] = useState({
     title: "",
     content: "",
     category: "",
+    tags: "",
     image: "",
   });
   const navigate = useNavigate();
@@ -33,12 +54,9 @@ const Dashboard = () => {
         const { data } = await api.get("/users/me");
         setUser(data);
         if (data.role !== "admin") {
-          // Redirect if not an admin
           navigate("/blogs");
           return;
         }
-
-        // Fetch all approved blogs for the dashboard list
         const blogs = await api.get("/blogs");
         setAllBlogs(blogs.data);
       } catch (error) {
@@ -54,59 +72,95 @@ const Dashboard = () => {
   const logout = () => {
     localStorage.removeItem("token");
     navigate("/login");
+    toast.info("Logged out successfully!");
   };
 
-  // Post blog (admin only, always approved)
   const handlePostBlog = async () => {
+    if (!newBlog.title || !newBlog.content || !newBlog.category) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
     try {
-      const { data } = await api.post("/blogs", newBlog);
-      setAllBlogs([data, ...allBlogs]); // Add the new blog to the list
-      setNewBlog({ title: "", content: "", category: "", image: "" });
-      alert("Blog posted successfully!");
-      setShowPostForm(false); // Hide the form after successful post
+      if (editingBlog) {
+        const { data } = await api.put(`/blogs/${editingBlog._id}`, newBlog);
+        setAllBlogs(
+          allBlogs.map((b) => (b._id === editingBlog._id ? data : b))
+        );
+        toast.success("Blog updated successfully!");
+        setEditingBlog(null);
+      } else {
+        const { data } = await api.post("/blogs", newBlog);
+        setAllBlogs([data, ...allBlogs]);
+        toast.success("Blog posted successfully!");
+      }
+      setNewBlog({ title: "", content: "", category: "", tags: "", image: "" });
+      setShowPostForm(false);
     } catch (error) {
-      console.error("Failed to post blog:", error);
-      alert("Failed to post blog. Check console for details.");
+      console.error("Failed to save blog:", error);
+      toast.error("Failed to save blog. Check console for details.");
     }
   };
 
-  if (loading)
+  const handleDeleteBlog = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this blog?")) return;
+    try {
+      await api.delete(`/blogs/${id}`);
+      setAllBlogs(allBlogs.filter((blog) => blog._id !== id));
+      toast.success("Blog deleted successfully!");
+    } catch (error) {
+      console.error("Failed to delete blog:", error);
+      toast.error("Failed to delete blog.");
+    }
+  };
+
+  if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-gray-300">
+      <div className="flex items-center justify-center min-h-screen bg-white text-black">
         <p>Loading dashboard...</p>
       </div>
     );
+  }
 
-  // If user is not an admin, they are already redirected.
-  // This is a safety check.
   if (!user || user.role !== "admin") return null;
 
+  const modules = {
+    toolbar: [
+      [{ header: "1" }, { header: "2" }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "image"],
+      ["clean"],
+    ],
+  };
+
+  const formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "link",
+    "image",
+  ];
+
   return (
-    <div className="flex min-h-screen bg-gray-900 text-gray-100">
+    <div className="flex min-h-screen bg-white text-black">
+      <ToastContainer position="bottom-right" theme="light" />
+
       {/* Sidebar */}
       <div
         className={`fixed inset-y-0 left-0 transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 flex flex-col w-64 bg-gray-800 shadow-xl`}
+        } md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-50 flex flex-col w-64 bg-gray-100 shadow-xl`}
       >
-        {/* Profile section */}
         <div className="flex items-center justify-between p-6">
-          <div className="flex items-center space-x-3">
-            <img
-              src={user.profilePic || "/default-avatar.png"}
-              alt="Profile"
-              className="w-12 h-12 rounded-full border-2 border-blue-500 object-cover"
-            />
-            <div className="hidden md:block">
-              <h1 className="font-bold text-lg text-blue-400">
-                Admin Dashboard
-              </h1>
-              <p className="text-gray-400 text-sm">{user.name}</p>
-            </div>
-          </div>
+          <h1 className="font-bold text-lg text-blue-700">Admin Dashboard</h1>
           <button
             onClick={() => setIsSidebarOpen(false)}
-            className="md:hidden text-gray-400 hover:text-white transition-colors"
+            className="md:hidden text-gray-600 hover:text-black transition-colors"
           >
             <FaTimes size={24} />
           </button>
@@ -115,21 +169,22 @@ const Dashboard = () => {
         <nav className="flex-1 px-4 py-6 space-y-2">
           <a
             href="/dashboard"
-            className="flex items-center p-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+            className="flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-200 hover:text-black transition-colors"
           >
             <FaHome className="mr-3" /> Dashboard
           </a>
           <a
             href="/blogs"
-            className="flex items-center p-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+            className="flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-200 hover:text-black transition-colors"
           >
             <FaBlog className="mr-3" /> Blogs
           </a>
         </nav>
-        <div className="p-4 border-t border-gray-700">
+
+        <div className="p-4 border-t border-gray-300">
           <button
             onClick={logout}
-            className="flex items-center w-full p-3 rounded-lg text-red-400 hover:bg-gray-700 hover:text-red-300 transition-colors"
+            className="flex items-center w-full p-3 rounded-lg text-red-600 hover:bg-gray-200 hover:text-red-800 transition-colors"
           >
             <FaSignOutAlt className="mr-3" /> Logout
           </button>
@@ -138,89 +193,147 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col p-6 space-y-8">
-        <h1 className="text-3xl font-bold text-center text-blue-400">
+        {/* Mobile Navbar */}
+        <div className="flex items-center justify-between md:hidden mb-6">
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            className="text-gray-600 hover:text-black transition-colors"
+          >
+            <FaBars size={24} />
+          </button>
+          <h1 className="font-bold text-xl text-blue-700">Dashboard</h1>
+        </div>
+
+        <h1 className="text-3xl font-bold text-center text-blue-800">
           Admin Dashboard
         </h1>
 
-        {/* Toggleable Blog Posting Form */}
-        <div className="max-w-3xl mx-auto p-6 bg-gray-800 rounded-xl shadow-lg border border-gray-700 w-full">
+        {/* Add Blog Button */}
+        <div className="text-center">
           <button
-            onClick={() => setShowPostForm(!showPostForm)}
-            className="flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg text-white font-semibold mb-4 w-full justify-center"
+            onClick={() => {
+              setShowPostForm(true);
+              setEditingBlog(null);
+              setNewBlog({
+                title: "",
+                content: "",
+                category: "",
+                tags: "",
+                image: "",
+              });
+            }}
+            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold flex items-center justify-center mx-auto"
           >
-            <FaPlus className="mr-2" />
-            {showPostForm ? "Hide Post Form" : "Post a New Blog"}
+            <FaPlus className="mr-2" /> Add New Blog
           </button>
-
-          {showPostForm && (
-            <div>
-              <h3 className="text-xl font-bold text-green-400 mb-4">
-                New Blog Details
-              </h3>
-              <input
-                type="text"
-                placeholder="Title"
-                value={newBlog.title}
-                onChange={(e) =>
-                  setNewBlog({ ...newBlog, title: e.target.value })
-                }
-                className="w-full mb-3 p-2 rounded bg-gray-700 text-gray-100"
-              />
-              <textarea
-                placeholder="Content"
-                value={newBlog.content}
-                onChange={(e) =>
-                  setNewBlog({ ...newBlog, content: e.target.value })
-                }
-                className="w-full mb-3 p-2 rounded bg-gray-700 text-gray-100"
-                rows={5}
-              />
-              <input
-                type="text"
-                placeholder="Category"
-                value={newBlog.category}
-                onChange={(e) =>
-                  setNewBlog({ ...newBlog, category: e.target.value })
-                }
-                className="w-full mb-3 p-2 rounded bg-gray-700 text-gray-100"
-              />
-              <input
-                type="text"
-                placeholder="Image URL"
-                value={newBlog.image}
-                onChange={(e) =>
-                  setNewBlog({ ...newBlog, image: e.target.value })
-                }
-                className="w-full mb-3 p-2 rounded bg-gray-700 text-gray-100"
-              />
-              <button
-                onClick={handlePostBlog}
-                className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg mt-4 w-full justify-center"
-              >
-                <FaPlus className="mr-2" /> Publish Blog
-              </button>
-            </div>
-          )}
         </div>
 
-        {/* All Blogs List for Admin */}
-        <div className="max-w-3xl mx-auto p-6 bg-gray-800 rounded-xl shadow-lg border border-gray-700 w-full">
-          <h3 className="text-xl font-bold text-purple-400 mb-4">
-            All Published Blogs
-          </h3>
+        {/* Blog Posting Form */}
+        {showPostForm && (
+          <div className="max-w-3xl mx-auto p-6 bg-gray-100 rounded-xl shadow-lg border border-gray-300 w-full">
+            <h3 className="text-xl font-bold text-blue-700 mb-4">
+              {editingBlog ? "Edit Blog" : "New Blog"}
+            </h3>
+            <input
+              type="text"
+              placeholder="Title"
+              value={newBlog.title}
+              onChange={(e) =>
+                setNewBlog({ ...newBlog, title: e.target.value })
+              }
+              className="w-full mb-3 p-2 rounded bg-white border border-gray-300 text-black"
+            />
+            <ReactQuill
+              theme="snow"
+              value={newBlog.content}
+              onChange={(content) =>
+                setNewBlog({ ...newBlog, content: content })
+              }
+              modules={modules}
+              formats={formats}
+              className="mb-3 text-black bg-white"
+            />
+            <input
+              type="text"
+              placeholder="Category"
+              value={newBlog.category}
+              onChange={(e) =>
+                setNewBlog({ ...newBlog, category: e.target.value })
+              }
+              className="w-full mb-3 p-2 rounded bg-white border border-gray-300 text-black"
+            />
+            <input
+              type="text"
+              placeholder="Tags (comma-separated)"
+              value={newBlog.tags}
+              onChange={(e) => setNewBlog({ ...newBlog, tags: e.target.value })}
+              className="w-full mb-3 p-2 rounded bg-white border border-gray-300 text-black"
+            />
+            <input
+              type="text"
+              placeholder="Image URL"
+              value={newBlog.image}
+              onChange={(e) =>
+                setNewBlog({ ...newBlog, image: e.target.value })
+              }
+              className="w-full mb-3 p-2 rounded bg-white border border-gray-300 text-black"
+            />
+            <button
+              onClick={handlePostBlog}
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg mt-4"
+            >
+              {editingBlog ? "Update Blog" : "Publish Blog"}
+            </button>
+          </div>
+        )}
+
+        {/* Blogs List */}
+        <div className="max-w-3xl mx-auto p-6 bg-gray-100 rounded-xl shadow-lg border border-gray-300 w-full">
+          <h3 className="text-xl font-bold text-blue-800 mb-4">All Blogs</h3>
           {allBlogs.length === 0 ? (
-            <p className="text-gray-400">No blogs have been published yet.</p>
+            <p className="text-gray-500">No blogs yet.</p>
           ) : (
             allBlogs.map((blog) => (
-              <div key={blog._id} className="p-4 bg-gray-700 rounded-lg mb-4">
-                <h4 className="font-bold text-blue-300">{blog.title}</h4>
-                <p className="text-sm text-gray-400">
-                  By {blog.author} | Status: {blog.status}
-                </p>
-                <p className="text-sm text-gray-400">
-                  Views: {blog.views} | Likes: {blog.likes?.length || 0} |
-                  Comments: {blog.comments?.length || 0}
-                </p>
+              <div
+                key={blog._id}
+                className="p-4 bg-white border border-gray-300 rounded-lg mb-4 flex justify-between items-center"
+              >
+                <div>
+                  <h4 className="font-bold text-blue-900">
+                    <Link to={`/blogs/${blog.slug}`}>{blog.title}</Link>
+                  </h4>
+                  <p className="text-sm text-gray-700">
+                    By {blog.author} | Category: {blog.category}
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    Views: {blog.views} | Likes: {blog.likes?.length || 0} |
+                    Comments: {blog.comments?.length || 0}
+                  </p>
+                </div>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => {
+                      setEditingBlog(blog);
+                      setNewBlog({
+                        title: blog.title,
+                        content: blog.content,
+                        category: blog.category,
+                        tags: blog.tags?.join(", ") || "",
+                        image: blog.image || "",
+                      });
+                      setShowPostForm(true);
+                    }}
+                    className="p-2 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white"
+                  >
+                    <FaEdit />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteBlog(blog._id)}
+                    className="p-2 rounded-lg bg-red-600 hover:bg-red-700 text-white"
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
               </div>
             ))
           )}

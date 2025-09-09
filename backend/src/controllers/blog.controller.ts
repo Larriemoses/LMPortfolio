@@ -4,6 +4,19 @@ import { Request, Response } from "express";
 import { Blog } from "../models/Blog";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { Types } from "mongoose";
+import slugify from "slugify";
+
+// Helper function to generate a unique slug
+const generateUniqueSlug = async (title: string): Promise<string> => {
+  const baseSlug = slugify(title, { lower: true, strict: true });
+  let slug = baseSlug;
+  let counter = 1;
+  while (await Blog.exists({ slug })) {
+    slug = `${baseSlug}-${counter}`;
+    counter++;
+  }
+  return slug;
+};
 
 // ✅ Public Routes
 
@@ -18,10 +31,10 @@ export const getApprovedBlogs = async (req: Request, res: Response) => {
   }
 };
 
-// Get a single blog by ID
-export const getBlogById = async (req: Request, res: Response) => {
+// Get a single blog by slug
+export const getBlogBySlug = async (req: Request, res: Response) => {
   try {
-    const blog = await Blog.findById(req.params.id);
+    const blog = await Blog.findOne({ slug: req.params.slug });
     if (!blog) {
       return res.status(404).json({ message: "Blog not found" });
     }
@@ -44,17 +57,16 @@ export const getCategories = async (req: Request, res: Response) => {
 // ✅ Optimized and corrected function to increment views
 export const incrementViews = async (req: Request, res: Response) => {
   try {
-    const blog = await Blog.findByIdAndUpdate(
-      req.params.id,
-      { $inc: { views: 1 } }, // Use $inc to atomically increment views by 1
-      { new: true } // Return the updated document
+    const blog = await Blog.findOneAndUpdate(
+      { slug: req.params.slug },
+      { $inc: { views: 1 } },
+      { new: true }
     );
 
     if (!blog) {
       return res.status(404).json({ message: "Blog not found" });
     }
 
-    // We can now send back a success message or the updated blog
     res
       .status(200)
       .json({ message: "View count updated", newViews: blog.views });
@@ -75,13 +87,15 @@ export const createBlog = async (req: AuthRequest, res: Response) => {
         .json({ message: "Not authorized. Admin access required." });
     }
     const { title, content, tags, category, image } = req.body;
-    // ✅ Corrected type assertion: first to 'unknown', then to 'ObjectId'
     const authorId = req.user._id as unknown as Types.ObjectId;
     const author = req.user.name;
+
+    const slug = await generateUniqueSlug(title);
 
     const newBlog = await Blog.create({
       title,
       content,
+      slug,
       author,
       authorId,
       tags,
@@ -100,19 +114,17 @@ export const createBlog = async (req: AuthRequest, res: Response) => {
 // Update a blog post (admin only)
 export const updateBlog = async (req: AuthRequest, res: Response) => {
   try {
-    const blog = await Blog.findById(req.params.id);
+    const blog = await Blog.findOneAndUpdate(
+      { slug: req.params.slug },
+      req.body,
+      {
+        new: true,
+      }
+    );
     if (!blog) {
       return res.status(404).json({ message: "Blog not found" });
     }
-    if (!req.user || req.user.role !== "admin") {
-      return res
-        .status(403)
-        .json({ message: "Not authorized to update this blog" });
-    }
-    const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    res.json(updatedBlog);
+    res.json(blog);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
@@ -121,16 +133,10 @@ export const updateBlog = async (req: AuthRequest, res: Response) => {
 // Delete a blog post (admin only)
 export const deleteBlog = async (req: AuthRequest, res: Response) => {
   try {
-    const blog = await Blog.findById(req.params.id);
+    const blog = await Blog.findOneAndDelete({ slug: req.params.slug });
     if (!blog) {
       return res.status(404).json({ message: "Blog not found" });
     }
-    if (!req.user || req.user.role !== "admin") {
-      return res
-        .status(403)
-        .json({ message: "Not authorized to delete this blog" });
-    }
-    await blog.deleteOne();
     res.json({ message: "Blog removed" });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
@@ -140,11 +146,10 @@ export const deleteBlog = async (req: AuthRequest, res: Response) => {
 // Toggle like
 export const toggleLike = async (req: AuthRequest, res: Response) => {
   try {
-    const blog = await Blog.findById(req.params.id);
+    const blog = await Blog.findOne({ slug: req.params.slug });
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
     }
-    // ✅ Corrected type assertion
     const userId = req.user._id as unknown as Types.ObjectId;
 
     if (!blog) {
@@ -177,7 +182,6 @@ export const addComment = async (req: AuthRequest, res: Response) => {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
     }
-    // ✅ Corrected type assertion
     const userId = req.user._id as unknown as Types.ObjectId;
 
     if (!text) {
@@ -186,8 +190,8 @@ export const addComment = async (req: AuthRequest, res: Response) => {
 
     const newComment = { user: userId, text, createdAt: new Date() };
 
-    const blog = await Blog.findByIdAndUpdate(
-      req.params.id,
+    const blog = await Blog.findOneAndUpdate(
+      { slug: req.params.slug },
       { $push: { comments: newComment } },
       { new: true }
     );
