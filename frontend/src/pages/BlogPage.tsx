@@ -8,6 +8,7 @@ import { useTheme } from "../theme/ThemeProvider";
 
 interface Blog {
   _id: string;
+  slug: string; // ✅ Now includes slug in the interface
   title: string;
   content: string;
   author: string;
@@ -100,9 +101,13 @@ const BlogPage = () => {
                     >
                       {blog.title}
                     </h2>
-                    <p className={`mt-2 text-sm ${secondaryText} ${fontClass}`}>
-                      {blog.content.substring(0, 150)}...
-                    </p>
+                    {/* Render rich content using dangerouslySetInnerHTML */}
+                    <div
+                      className={`mt-2 text-sm ${secondaryText} ${fontClass} prose max-w-none`}
+                      dangerouslySetInnerHTML={{
+                        __html: blog.content.substring(0, 150) + "...",
+                      }}
+                    />
                   </div>
                   <div className={`mt-4 pt-4 border-t ${borderColor}`}>
                     <div className="flex justify-between items-center text-xs mb-4">
@@ -117,8 +122,9 @@ const BlogPage = () => {
                         </span>
                       </div>
                     </div>
+                    {/* Use blog.slug instead of blog._id in the Link */}
                     <Link
-                      to={`/blogs/${blog._id}`}
+                      to={`/blogs/${blog.slug}`}
                       className={`inline-block w-full text-center px-4 py-2 rounded-lg font-bold transition-colors duration-300 ${buttonBg} text-white`}
                     >
                       Read More

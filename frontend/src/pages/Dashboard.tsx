@@ -13,8 +13,9 @@ import {
   FaTrash,
   FaEdit,
 } from "react-icons/fa";
-import ReactQuill from "react-quill-new"; // modern compatible package
-import "react-quill-new/dist/quill.snow.css";
+import ReactQuill from "react-quill-new";
+// ✅ CORRECTED: Import stylesheet from the 'quill' package
+import "quill/dist/quill.snow.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -82,9 +83,9 @@ const Dashboard = () => {
     }
     try {
       if (editingBlog) {
-        const { data } = await api.put(`/blogs/${editingBlog._id}`, newBlog);
+        const { data } = await api.put(`/blogs/${editingBlog.slug}`, newBlog);
         setAllBlogs(
-          allBlogs.map((b) => (b._id === editingBlog._id ? data : b))
+          allBlogs.map((b) => (b.slug === editingBlog.slug ? data : b))
         );
         toast.success("Blog updated successfully!");
         setEditingBlog(null);
@@ -101,11 +102,11 @@ const Dashboard = () => {
     }
   };
 
-  const handleDeleteBlog = async (id: string) => {
+  const handleDeleteBlog = async (slug: string) => {
     if (!window.confirm("Are you sure you want to delete this blog?")) return;
     try {
-      await api.delete(`/blogs/${id}`);
-      setAllBlogs(allBlogs.filter((blog) => blog._id !== id));
+      await api.delete(`/blogs/${slug}`);
+      setAllBlogs(allBlogs.filter((blog) => blog.slug !== slug));
       toast.success("Blog deleted successfully!");
     } catch (error) {
       console.error("Failed to delete blog:", error);
@@ -123,18 +124,29 @@ const Dashboard = () => {
 
   if (!user || user.role !== "admin") return null;
 
+  // ✅ UPDATED: Added header tags, font, size, and video to toolbar
   const modules = {
     toolbar: [
       [{ header: "1" }, { header: "2" }],
+      [{ font: [] }],
+      [{ size: ["small", false, "large", "huge"] }],
       ["bold", "italic", "underline", "strike", "blockquote"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["link", "image"],
+      [
+        { list: "ordered" },
+        { list: "bullet" },
+        { indent: "-1" },
+        { indent: "+1" },
+      ],
+      ["link", "image", "video"],
       ["clean"],
     ],
   };
 
+  // ✅ UPDATED: Added formats for headers, font, size, and video
   const formats = [
     "header",
+    "font",
+    "size",
     "bold",
     "italic",
     "underline",
@@ -142,8 +154,10 @@ const Dashboard = () => {
     "blockquote",
     "list",
     "bullet",
+    "indent",
     "link",
     "image",
+    "video",
   ];
 
   return (
@@ -328,7 +342,7 @@ const Dashboard = () => {
                     <FaEdit />
                   </button>
                   <button
-                    onClick={() => handleDeleteBlog(blog._id)}
+                    onClick={() => handleDeleteBlog(blog.slug)}
                     className="p-2 rounded-lg bg-red-600 hover:bg-red-700 text-white"
                   >
                     <FaTrash />

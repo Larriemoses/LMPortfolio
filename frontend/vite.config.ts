@@ -5,12 +5,16 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [
-    react(), // ✅ Correctly processes React components
-    tailwindcss(), // Correctly handles Tailwind CSS
+    react(),
+    tailwindcss(),
     nodePolyfills({
-      // ✅ Fixes the "process is not defined" error
-      // globals: true,
       protocolImports: true,
     }),
   ],
+  server: {
+    // This is the key change
+    proxy: {
+      "/api": "http://localhost:5000",
+    },
+  },
 });

@@ -1,14 +1,22 @@
 // src/pages/BlogPreviewPage.tsx
 
-import { useEffect, useState } from "react";
-import type { ChangeEvent, FormEvent } from "react";
+import { useState } from "react";
+import type { FormEvent, ChangeEvent } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../services/api";
 import { FaUser, FaArrowLeft, FaEye, FaMoon, FaSun } from "react-icons/fa";
 import { useTheme } from "../theme/ThemeProvider";
+import useBlogData from "../hooks/useBlogData";
+import DOMPurify from "dompurify";
+
+// ✅ Tailwind Typography styles Quill content properly
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.core.css";
+import "../index.css"; // make sure tailwind typography plugin is enabled
 
 interface Blog {
   _id: string;
+  slug: string;
   title: string;
   content: string;
   author: string;
@@ -27,12 +35,10 @@ interface Comment {
 }
 
 const BlogPreviewPage = () => {
-  const { id } = useParams();
-  const [blog, setBlog] = useState<Blog | null>(null);
-  const [relatedBlogs, setRelatedBlogs] = useState<Blog[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { slug } = useParams<{ slug: string }>();
+
   const { theme, toggleTheme } = useTheme();
+  const { blog, relatedBlogs, loading, error, setBlog } = useBlogData(slug);
 
   const [commentName, setCommentName] = useState("");
   const [commentText, setCommentText] = useState("");
@@ -44,55 +50,29 @@ const BlogPreviewPage = () => {
 
   const FORMSPREE_ENDPOINT = "https://formspree.io/f/xjkejyaw";
 
-  useEffect(() => {
-    const fetchBlogData = async () => {
-      try {
-        setLoading(true);
-        const blogResponse = await api.get(`/blogs/${id}`);
-        setBlog(blogResponse.data);
-
-        const relatedBlogsResponse = await api.get("/blogs");
-        const filteredBlogs = relatedBlogsResponse.data
-          .filter((b: Blog) => b._id !== id)
-          .slice(0, 5);
-        setRelatedBlogs(filteredBlogs);
-
-        await api.patch(`/blogs/${id}/views`);
-      } catch (err) {
-        console.error("Failed to fetch blog:", err);
-        setError("Blog not found or an error occurred.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (id) {
-      fetchBlogData();
-    }
-  }, [id]);
-
+  // ✅ Submit comment
   const handleCommentSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!commentName || !commentText) return;
     try {
       const newComment = { name: commentName, text: commentText };
-      await api.post(`/blogs/${id}/comment`, newComment);
-      const blogResponse = await api.get(`/blogs/${id}`);
+      await api.post(`/blogs/${slug}/comment`, newComment);
+      const blogResponse = await api.get(`/blogs/${slug}`);
       setBlog(blogResponse.data);
       setCommentName("");
       setCommentText("");
-    } catch (error) {
-      console.error("Failed to submit comment:", error);
+    } catch (commentError) {
+      console.error("Failed to submit comment:", commentError);
     }
   };
 
+  // ✅ Contact form
   const handleContactSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
       const response = await fetch(FORMSPREE_ENDPOINT, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: contactName,
           email: contactEmail,
@@ -103,8 +83,7 @@ const BlogPreviewPage = () => {
 
       if (response.ok) {
         setFormStatus({
-          message:
-            "Thank you for your feedback! It has been submitted successfully.",
+          message: "Thank you for your feedback! Submitted successfully.",
           type: "success",
         });
         setContactName("");
@@ -116,61 +95,69 @@ const BlogPreviewPage = () => {
           type: "error",
         });
       }
-    } catch (error) {
-      console.error("Form submission error:", error);
+    } catch (err) {
       setFormStatus({
         message: "An error occurred. Please try again later.",
         type: "error",
       });
     }
-    setTimeout(() => {
-      setFormStatus({ message: "", type: "" });
-    }, 5000);
+    setTimeout(() => setFormStatus({ message: "", type: "" }), 5000);
   };
 
+  // ✅ Tailwind class helpers
   const primaryBg = theme === "dark" ? "bg-gray-900" : "bg-white";
   const primaryText = theme === "dark" ? "text-gray-200" : "text-gray-800";
   const secondaryBg = theme === "dark" ? "bg-gray-800" : "bg-gray-50";
   const secondaryText = theme === "dark" ? "text-gray-300" : "text-gray-700";
   const accentColor = theme === "dark" ? "text-green-400" : "text-green-600";
   const inputBg = theme === "dark" ? "bg-gray-700" : "bg-gray-200";
-  const buttonBg =
-    theme === "dark"
-      ? "bg-black hover:bg-gray-800"
-      : "bg-black hover:bg-gray-800";
+  const buttonBg = "bg-black hover:bg-gray-800";
   const borderColor = theme === "dark" ? "border-gray-700" : "border-gray-300";
-
   const alertClass =
     formStatus.type === "success" ? "bg-green-500" : "bg-red-500";
   const fontClass = "font-serif";
 
-  if (loading) {
+  if (loading)
     return (
       <div
-        className={`flex justify-center items-center min-h-screen ${primaryBg} ${primaryText} ${fontClass}`}
+        className={`flex justify-center items-center min-h-screen ${primaryBg} ${primaryText}`}
       >
         <p>Loading blog post...</p>
       </div>
     );
-  }
 
-  if (error || !blog) {
+  if (error)
     return (
       <div
-        className={`flex justify-center items-center min-h-screen ${primaryBg} ${primaryText} ${fontClass}`}
+        className={`flex flex-col justify-center items-center min-h-screen ${primaryBg} ${primaryText}`}
       >
-        <p>{error || "No blog post found."}</p>
+        <p className="text-xl text-red-500 font-bold mb-4">{error}</p>
+        <Link to="/blogs" className={`${accentColor} hover:underline`}>
+          Go back to all blogs
+        </Link>
       </div>
     );
-  }
+
+  if (!blog)
+    return (
+      <div
+        className={`flex justify-center items-center min-h-screen ${primaryBg} ${primaryText}`}
+      >
+        <p>No blog post found.</p>
+      </div>
+    );
+
+  // ✅ Sanitize blog content before rendering
+  const cleanHTML = DOMPurify.sanitize(blog.content, {
+    USE_PROFILES: { html: true },
+  });
 
   return (
-    <div
-      className={`${primaryBg} ${primaryText} min-h-screen p-4 sm:p-8 font-sans`}
-    >
+    <div className={`${primaryBg} ${primaryText} min-h-screen p-4 sm:p-8`}>
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
-        {/* Main Content Area */}
+        {/* Main Content */}
         <div className="flex-1">
+          {/* Header */}
           <div className="flex justify-between items-center mb-6">
             <Link
               to="/blogs"
@@ -180,35 +167,32 @@ const BlogPreviewPage = () => {
             </Link>
             <button
               onClick={toggleTheme}
-              className={`p-2 rounded-full ${secondaryBg} ${primaryText} hover:opacity-80 transition-opacity`}
+              className={`p-2 rounded-full ${secondaryBg} ${primaryText}`}
             >
               {theme === "dark" ? <FaSun size={20} /> : <FaMoon size={20} />}
             </button>
           </div>
 
-          <h1
-            className={`text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 ${primaryText} ${fontClass}`}
-          >
+          {/* Title */}
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
             {blog.title}
           </h1>
-          <div
-            className={`flex flex-wrap items-center mb-6 space-x-4 text-sm ${secondaryText} ${fontClass}`}
-          >
-            <div className="flex items-center">
-              <FaUser className="mr-2" />
-              <span>By {blog.author}</span>
-            </div>
-            <span>|</span>
-            <div className="flex items-center">
-              <FaEye className="mr-2" />
-              <span>{blog.views} Views</span>
-            </div>
-            <span>|</span>
-            <span className="text-sm">
-              {new Date(blog.createdAt).toLocaleDateString()}
-            </span>
+
+          {/* Author + Meta */}
+          <div className="flex items-center space-x-4 text-sm mb-6">
+            <img
+              src="https://res.cloudinary.com/dvl2r3bdw/image/upload/v1755525952/1749898239122_v2xyue.jpg"
+              alt="Olarewaju Adebulu"
+              className="w-10 h-10 rounded-full object-cover"
+            />
+            <span className="font-medium">Olarewaju Adebulu</span>
+            <span className="opacity-60">•</span>
+            <FaEye className="mr-1" /> {blog.views} views
+            <span className="opacity-60">•</span>
+            {new Date(blog.createdAt).toLocaleDateString()}
           </div>
 
+          {/* Image */}
           {blog.image && (
             <img
               src={blog.image}
@@ -217,19 +201,17 @@ const BlogPreviewPage = () => {
             />
           )}
 
-          <div className="prose max-w-none text-lg leading-relaxed">
-            <p
-              className={`whitespace-pre-line font-medium ${primaryText} ${fontClass}`}
-            >
-              {blog.content}
-            </p>
-          </div>
+          {/* ✅ Rich Content */}
+          <div
+            className={`prose max-w-none text-lg leading-relaxed ${
+              theme === "dark" ? "prose-invert" : ""
+            }`}
+            dangerouslySetInnerHTML={{ __html: cleanHTML }}
+          />
 
-          {/* Comments Section */}
-          <div className="mt-12">
-            <h2
-              className={`text-2xl font-bold mb-4 ${primaryText} ${fontClass}`}
-            >
+          {/* Comments */}
+          <div id="comments-section" className="mt-12">
+            <h2 className="text-2xl font-bold mb-4">
               Comments ({blog.comments.length})
             </h2>
             <form onSubmit={handleCommentSubmit} className="space-y-4">
@@ -240,7 +222,7 @@ const BlogPreviewPage = () => {
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setCommentName(e.target.value)
                 }
-                className={`w-full p-2 border ${borderColor} rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 ${inputBg} ${primaryText} font-medium ${fontClass}`}
+                className={`w-full p-2 border ${borderColor} rounded-md ${inputBg}`}
               />
               <textarea
                 placeholder="Write a comment..."
@@ -248,7 +230,7 @@ const BlogPreviewPage = () => {
                 onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                   setCommentText(e.target.value)
                 }
-                className={`w-full p-2 border ${borderColor} rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 h-24 ${inputBg} ${primaryText} font-medium ${fontClass}`}
+                className={`w-full p-2 border ${borderColor} rounded-md h-24 ${inputBg}`}
               />
               <button
                 type="submit"
@@ -257,21 +239,16 @@ const BlogPreviewPage = () => {
                 Post Comment
               </button>
             </form>
+
             <div className="mt-8 space-y-6">
               {blog.comments.map((comment) => (
                 <div
                   key={comment._id}
                   className={`${secondaryBg} p-4 rounded-lg border ${borderColor}`}
                 >
-                  <p className={`font-medium ${secondaryText} ${fontClass}`}>
-                    {comment.name}
-                  </p>
-                  <p className={`mt-1 text-sm ${secondaryText} ${fontClass}`}>
-                    {comment.text}
-                  </p>
-                  <span
-                    className={`block text-right text-xs ${secondaryText} ${fontClass}`}
-                  >
+                  <p className="font-medium">{comment.name}</p>
+                  <p className="mt-1 text-sm">{comment.text}</p>
+                  <span className="block text-right text-xs">
                     {new Date(comment.createdAt).toLocaleDateString()}
                   </span>
                 </div>
@@ -282,56 +259,36 @@ const BlogPreviewPage = () => {
 
         {/* Sidebar */}
         <div className="lg:w-80 w-full lg:sticky lg:top-8 lg:self-start">
-          {/* Related Blogs Section */}
+          {/* Related Blogs */}
           <div
-            className={`${secondaryBg} rounded-lg p-6 mb-8 border ${borderColor}`}
+            className={`rounded-lg p-6 mb-8 border ${borderColor} ${secondaryBg}`}
           >
-            <h2
-              className={`text-2xl font-bold mb-4 ${primaryText} ${fontClass}`}
-            >
-              Related Blogs
-            </h2>
+            <h2 className="text-2xl font-bold mb-4">Related Blogs</h2>
             <ul className="space-y-4">
               {relatedBlogs.length > 0 ? (
                 relatedBlogs.map((relatedBlog) => (
                   <li key={relatedBlog._id}>
                     <Link
-                      to={`/blogs/${relatedBlog._id}`}
+                      to={`/blogs/${relatedBlog.slug}`}
                       onClick={() => window.scrollTo(0, 0)}
-                      className={`block p-4 rounded-lg transition-colors duration-300 ${
-                        theme === "dark"
-                          ? "bg-gray-700 hover:bg-gray-600"
-                          : "bg-gray-200 hover:bg-gray-300"
-                      }`}
+                      className="block p-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
                     >
-                      <h3
-                        className={`font-medium ${secondaryText} ${fontClass}`}
-                      >
-                        {relatedBlog.title}
-                      </h3>
-                      <p className={`text-sm ${secondaryText} ${fontClass}`}>
-                        By {relatedBlog.author}
-                      </p>
+                      <h3 className="font-medium">{relatedBlog.title}</h3>
+                      <p className="text-sm">By {relatedBlog.author}</p>
                     </Link>
                   </li>
                 ))
               ) : (
-                <p className={`text-gray-400 ${secondaryText} ${fontClass}`}>
-                  No related blogs found.
-                </p>
+                <p>No related blogs found.</p>
               )}
             </ul>
           </div>
 
-          {/* Contact Author Form */}
+          {/* Contact Author */}
           <div
-            className={`${secondaryBg} rounded-lg p-6 border ${borderColor}`}
+            className={`rounded-lg p-6 border ${borderColor} ${secondaryBg}`}
           >
-            <h2
-              className={`text-2xl font-bold mb-4 ${primaryText} ${fontClass}`}
-            >
-              Contact Author
-            </h2>
+            <h2 className="text-2xl font-bold mb-4">Contact Author</h2>
             {formStatus.message && (
               <div className={`${alertClass} text-white p-3 rounded-md mb-4`}>
                 {formStatus.message}
@@ -341,31 +298,28 @@ const BlogPreviewPage = () => {
               <input
                 type="text"
                 placeholder="Your Name"
-                name="name"
                 value={contactName}
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setContactName(e.target.value)
                 }
-                className={`w-full p-2 border ${borderColor} rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 ${inputBg} ${primaryText} font-medium ${fontClass}`}
+                className={`w-full p-2 border ${borderColor} rounded-md ${inputBg}`}
               />
               <input
                 type="email"
                 placeholder="Your Email"
-                name="email"
                 value={contactEmail}
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setContactEmail(e.target.value)
                 }
-                className={`w-full p-2 border ${borderColor} rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 ${inputBg} ${primaryText} font-medium ${fontClass}`}
+                className={`w-full p-2 border ${borderColor} rounded-md ${inputBg}`}
               />
               <textarea
                 placeholder="Your Message or Review"
-                name="message"
                 value={contactMessage}
                 onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                   setContactMessage(e.target.value)
                 }
-                className={`w-full p-2 border ${borderColor} rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 h-24 ${inputBg} ${primaryText} font-medium ${fontClass}`}
+                className={`w-full p-2 border ${borderColor} rounded-md h-24 ${inputBg}`}
               />
               <button
                 type="submit"

@@ -24,7 +24,8 @@ function App() {
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/blogs/:id" element={<BlogPreviewPage />} />
+          {/* ✅ Corrected route path to use `:slug` instead of `:id` */}
+          <Route path="/blogs/:slug" element={<BlogPreviewPage />} />
 
           {/* Protected Routes */}
           <Route
