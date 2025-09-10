@@ -1,16 +1,16 @@
 // src/pages/BlogPage.tsx
-
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import { Link } from "react-router-dom";
 import { FaUser, FaEye, FaMoon, FaSun } from "react-icons/fa";
 import { useTheme } from "../theme/ThemeProvider";
+import { stripHtml } from "string-strip-html";
 
 interface Blog {
   _id: string;
-  slug: string; // ✅ Now includes slug in the interface
+  slug: string;
   title: string;
-  content: string;
+  content: string; // markdown
   author: string;
   category: string;
   image?: string;
@@ -38,7 +38,6 @@ const BlogPage = () => {
     fetchBlogs();
   }, []);
 
-  // Medium-inspired styles
   const primaryBg = theme === "dark" ? "bg-gray-900" : "bg-white";
   const cardBgClass = theme === "dark" ? "bg-gray-800" : "bg-gray-100";
   const primaryText = theme === "dark" ? "text-gray-200" : "text-gray-800";
@@ -101,13 +100,9 @@ const BlogPage = () => {
                     >
                       {blog.title}
                     </h2>
-                    {/* Render rich content using dangerouslySetInnerHTML */}
-                    <div
-                      className={`mt-2 text-sm ${secondaryText} ${fontClass} prose max-w-none`}
-                      dangerouslySetInnerHTML={{
-                        __html: blog.content.substring(0, 150) + "...",
-                      }}
-                    />
+                    <p className={`mt-2 text-sm ${secondaryText} ${fontClass}`}>
+                      {stripHtml(blog.content).result.substring(0, 150)}...
+                    </p>
                   </div>
                   <div className={`mt-4 pt-4 border-t ${borderColor}`}>
                     <div className="flex justify-between items-center text-xs mb-4">
@@ -122,7 +117,6 @@ const BlogPage = () => {
                         </span>
                       </div>
                     </div>
-                    {/* Use blog.slug instead of blog._id in the Link */}
                     <Link
                       to={`/blogs/${blog.slug}`}
                       className={`inline-block w-full text-center px-4 py-2 rounded-lg font-bold transition-colors duration-300 ${buttonBg} text-white`}
