@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@tiptap/extension-image": "^3.4.4",
+    "@tiptap/react": "^3.4.4",
+    "@tiptap/starter-kit": "^3.4.4",
+    "react-simple-wysiwyg": "^3.4.1"
+  }
+}
