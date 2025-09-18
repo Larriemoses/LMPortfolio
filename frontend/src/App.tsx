@@ -5,7 +5,7 @@ import { ThemeProvider } from "./theme/ThemeProvider";
 
 import HomePage from "./pages/HomePage";
 import BlogsPage from "./pages/BlogPage";
-import ServicesPage from "./pages/ServicesPage";
+// import ServicesPage from "./pages/ServicesPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
@@ -21,7 +21,7 @@ function App() {
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/blogs" element={<BlogsPage />} />
-          <Route path="/services" element={<ServicesPage />} />
+          {/* <Route path="/services" element={<ServicesPage />} /> */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           {/* ✅ Corrected route path to use `:slug` instead of `:id` */}
