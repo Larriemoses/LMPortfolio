@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5000;
 
 // Correct CORS configuration to allow specific origin and credentials
 const corsOptions = {
-  origin: "http://localhost:5173", // Replace with your frontend's production URL later
+  origin: ["https://larriemoses.vercel.app", "http://localhost:5173"], // Replace with your frontend's production URL later
   credentials: true,
   optionsSuccessStatus: 200,
 };
