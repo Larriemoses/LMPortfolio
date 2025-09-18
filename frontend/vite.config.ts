@@ -14,7 +14,7 @@ export default defineConfig({
   server: {
     // This is the key change
     proxy: {
-      "/api": "http://localhost:5000",
+      "/api": "https://lmportfolio.onrender.com",
     },
   },
 });
