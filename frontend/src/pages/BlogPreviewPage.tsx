@@ -2,16 +2,23 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../services/api";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { motion } from "framer-motion";
 import { FaUser, FaEye, FaWhatsapp } from "react-icons/fa";
 import { TbBrandLinkedin, TbBrandGithub, TbBrandX } from "react-icons/tb";
 import { SiUpwork } from "react-icons/si";
-import { useTheme } from "../theme/ThemeProvider";
-import EditorJsRenderer from "editorjs-react-renderer";
-import type { OutputData } from "@editorjs/editorjs";
-import type { Blog } from "../types/blog";
+
+interface Blog {
+  _id: string;
+  title: string;
+  content: string; // ✅ HTML from TipTap
+  author: string;
+  category: string;
+  image?: string;
+  views: number;
+  likes: string[];
+  comments: { author: string; text: string }[];
+  slug: string;
+}
 
 const brandColors = {
   linkedin: "#0A66C2",
@@ -21,12 +28,15 @@ const brandColors = {
   whatsapp: "#25D366",
 };
 
-const BlogPreviewPage: React.FC = () => {
+const BlogPreviewPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const [blog, setBlog] = useState<Blog | null>(null);
   const [otherBlogs, setOtherBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
-  const { theme } = useTheme();
+
+  // Comments
+  const [commentName, setCommentName] = useState("");
+  const [commentText, setCommentText] = useState("");
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -34,9 +44,8 @@ const BlogPreviewPage: React.FC = () => {
         const { data } = await api.get(`/blogs/${slug}`);
         setBlog(data);
 
-        // fetch other blogs for related section
-        const { data: all } = await api.get("/blogs");
-        setOtherBlogs(all.filter((b: Blog) => b.slug !== slug).slice(0, 3));
+        const res = await api.get("/blogs");
+        setOtherBlogs(res.data.filter((b: Blog) => b.slug !== slug));
       } catch (error) {
         console.error("Error fetching blog:", error);
       } finally {
@@ -46,22 +55,30 @@ const BlogPreviewPage: React.FC = () => {
     fetchBlog();
   }, [slug]);
 
-  const isEditorJsData = (content: any): content is OutputData => {
-    return (
-      typeof content === "object" && content !== null && "blocks" in content
-    );
-  };
+  const handleCommentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!commentText.trim()) return;
 
-  const primaryBg = theme === "dark" ? "bg-gray-900" : "bg-white";
-  const primaryText = theme === "dark" ? "text-gray-200" : "text-gray-900";
-  const secondaryText = theme === "dark" ? "text-gray-400" : "text-gray-600";
-  const borderColor = theme === "dark" ? "border-gray-700" : "border-gray-200";
+    try {
+      await api.post(`/blogs/${slug}/comments`, {
+        author: commentName || "Anonymous",
+        text: commentText,
+      });
+
+      // refresh comments
+      const { data } = await api.get(`/blogs/${slug}`);
+      setBlog(data);
+
+      setCommentName("");
+      setCommentText("");
+    } catch (error) {
+      console.error("Error posting comment:", error);
+    }
+  };
 
   if (loading) {
     return (
-      <div
-        className={`flex justify-center items-center min-h-screen ${primaryBg} ${primaryText}`}
-      >
+      <div className="flex justify-center items-center min-h-screen bg-white text-gray-800">
         <p>Loading blog...</p>
       </div>
     );
@@ -69,236 +86,220 @@ const BlogPreviewPage: React.FC = () => {
 
   if (!blog) {
     return (
-      <div
-        className={`flex justify-center items-center min-h-screen ${primaryBg} ${primaryText}`}
-      >
+      <div className="flex justify-center items-center min-h-screen bg-white text-gray-800">
         <p>Blog not found.</p>
       </div>
     );
   }
 
   return (
-    <div className={`${primaryBg} ${primaryText} min-h-screen`}>
-      {/* Hero */}
-      {blog.image && (
-        <div className="w-full h-80 md:h-[400px] overflow-hidden">
-          <img
-            src={blog.image}
-            alt={blog.title}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      )}
-      <div className="max-w-4xl mx-auto px-6 md:px-8 lg:px-12 -mt-20 relative z-10">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-10">
-          <h1 className="text-3xl md:text-5xl font-bold font-serif mb-4">
+    <div className="bg-white text-gray-800 min-h-screen p-6 md:p-12">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
+        {/* Blog Content */}
+        <div className="lg:col-span-8">
+          {blog.image && (
+            <img
+              src={blog.image}
+              alt={blog.title}
+              className="w-full max-h-[400px] object-cover rounded-lg shadow mb-8"
+            />
+          )}
+
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight font-serif">
             {blog.title}
           </h1>
-          <div className="flex flex-wrap items-center gap-6 text-sm mb-8">
-            <span className={`flex items-center ${secondaryText}`}>
+
+          <div className="flex items-center space-x-6 text-sm mb-10 text-gray-500">
+            <span className="flex items-center">
               <FaUser className="mr-2" /> {blog.author}
             </span>
-            <span className={`flex items-center ${secondaryText}`}>
+            <span className="flex items-center">
               <FaEye className="mr-2" /> {blog.views} Views
             </span>
-            <span className="text-blue-600 font-medium">{blog.category}</span>
           </div>
 
-          {/* Blog Content */}
+          {/* Blog Body (TipTap HTML rendered) */}
           <article
-            className={`prose prose-lg max-w-none ${
-              theme === "dark"
-                ? "prose-invert prose-headings:text-gray-100 prose-p:text-gray-300 prose-a:text-blue-400"
-                : "prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-blue-600"
-            }`}
-          >
-            {isEditorJsData(blog.content) ? (
-              <EditorJsRenderer data={blog.content as OutputData} />
-            ) : (
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {blog.content as string}
-              </ReactMarkdown>
-            )}
-          </article>
-        </div>
+            className="prose prose-lg lg:prose-xl max-w-none font-serif text-gray-900 
+            prose-headings:font-serif prose-headings:font-bold prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl
+            prose-p:leading-relaxed prose-p:my-6 prose-img:rounded-lg prose-img:my-6"
+            dangerouslySetInnerHTML={{ __html: blog.content }}
+          />
 
-        {/* Author Bio */}
-        <div className={`mt-16 border-t pt-10 ${borderColor}`}>
-          <div className="flex flex-col items-center text-center">
+          {/* Author Section */}
+          <div className="border-t pt-8 mt-12 border-gray-300 flex flex-col items-center text-center">
             <img
               src="https://res.cloudinary.com/dvl2r3bdw/image/upload/v1755525952/1749898239122_v2xyue.jpg"
-              alt={blog.author}
-              className="w-24 h-24 rounded-full object-cover mb-4 shadow-md"
+              alt="Olarewaju Adebulu"
+              className="w-24 h-24 rounded-full object-cover mb-4 shadow-lg"
             />
-            <h3 className="text-xl font-semibold mb-2">{blog.author}</h3>
-            <p className={`max-w-2xl mb-4 ${secondaryText}`}>
-              B2B SaaS & Fintech Content Strategist, Technical Writer, and SEO
-              Growth Partner. Helping startups build authority and scale through
-              technical SEO, content marketing, and conversion-focused
-              storytelling.
+            <h3 className="text-xl font-semibold mb-2">Olarewaju Adebulu</h3>
+            <p className="mb-4 max-w-2xl text-gray-600">
+              I’m a{" "}
+              <span className="font-semibold">
+                B2B SaaS & Fintech Content Strategist, Technical Writer, and SEO
+                Growth Partner
+              </span>
+              . I help startups build authority and scale through technical SEO,
+              content marketing, and conversion-focused storytelling.
             </p>
-            {/* Social Icons */}
+
+            {/* Contact Icons */}
             <motion.div
-              className="flex space-x-6"
+              className="flex space-x-6 justify-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1, transition: { delay: 0.5, duration: 1 } }}
             >
               <a
                 href="https://www.linkedin.com/in/olarewajuadebulu/"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 <TbBrandLinkedin
-                  size={28}
+                  className="text-2xl sm:text-3xl"
                   color={brandColors.linkedin}
-                  className="hover:scale-110 transition"
                 />
               </a>
               <a
                 href="https://upwork.com/freelancers/~01ffd7d6d27c5a9d20"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 <SiUpwork
-                  size={28}
+                  className="text-2xl sm:text-3xl"
                   color={brandColors.upwork}
-                  className="hover:scale-110 transition"
                 />
               </a>
               <a
                 href="https://github.com/larriemoses"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 <TbBrandGithub
-                  size={28}
+                  className="text-2xl sm:text-3xl"
                   color={brandColors.github}
-                  className="hover:scale-110 transition"
                 />
               </a>
               <a
                 href="https://x.com/larriemoses"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 <TbBrandX
-                  size={28}
+                  className="text-2xl sm:text-3xl"
                   color={brandColors.twitter}
-                  className="hover:scale-110 transition"
                 />
               </a>
               <a
                 href="https://wa.me/+2348073210004"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 <FaWhatsapp
-                  size={28}
+                  className="text-2xl sm:text-3xl"
                   color={brandColors.whatsapp}
-                  className="hover:scale-110 transition"
                 />
               </a>
             </motion.div>
           </div>
-        </div>
 
-        {/* Contact Form */}
-        <div className={`mt-16 border-t pt-10 ${borderColor}`}>
-          <h3 className="text-2xl font-bold mb-6 font-serif">
-            Contact the Author
-          </h3>
-          <form className="space-y-4">
-            <input
-              type="text"
-              placeholder="Your Name"
-              className="w-full p-3 border rounded-lg bg-transparent"
-            />
-            <input
-              type="email"
-              placeholder="Your Email"
-              className="w-full p-3 border rounded-lg bg-transparent"
-            />
-            <textarea
-              rows={4}
-              placeholder="Your Message"
-              className="w-full p-3 border rounded-lg bg-transparent"
-            />
-            <button
-              type="submit"
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold"
-            >
-              Send Message
-            </button>
-          </form>
-        </div>
+          {/* Comments Section */}
+          <div className="mt-16 border-t pt-10 border-gray-300">
+            <h3 className="text-2xl font-bold mb-6">Comments</h3>
+            <form className="space-y-4 mb-8" onSubmit={handleCommentSubmit}>
+              <input
+                type="text"
+                placeholder="Your Name"
+                value={commentName}
+                onChange={(e) => setCommentName(e.target.value)}
+                className="w-full p-3 border rounded bg-white"
+              />
+              <textarea
+                placeholder="Write a comment..."
+                rows={4}
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                className="w-full p-3 border rounded bg-white"
+              />
+              <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                Post Comment
+              </button>
+            </form>
 
-        {/* Comments Section */}
-        <div className={`mt-16 border-t pt-10 ${borderColor}`}>
-          <h3 className="text-2xl font-bold mb-6 font-serif">Comments</h3>
-          <form className="mb-6">
-            <textarea
-              rows={3}
-              placeholder="Write a comment..."
-              className="w-full p-3 border rounded-lg bg-transparent"
-            />
-            <button className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-              Post Comment
-            </button>
-          </form>
-          {/* Example static comment */}
-          <div className="space-y-6">
-            {blog.comments.length === 0 ? (
-              <p className={secondaryText}>No comments yet. Be the first!</p>
-            ) : (
-              blog.comments.map((c, i) => (
-                <div key={i} className={`p-4 rounded-lg border ${borderColor}`}>
-                  <p className="font-semibold">{c.user || "Anonymous"}</p>
-                  <p className={secondaryText}>{c.text}</p>
-                </div>
-              ))
-            )}
+            <div className="space-y-6">
+              {blog.comments.length === 0 ? (
+                <p className="text-gray-500">No comments yet. Be the first!</p>
+              ) : (
+                blog.comments.map((c, i) => (
+                  <div key={i} className="border-b pb-4">
+                    <p className="font-semibold">{c.author || "Anonymous"}</p>
+                    <p className="text-gray-700">{c.text}</p>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Related Blogs */}
-        <div className={`mt-16 border-t pt-10 ${borderColor}`}>
-          <h3 className="text-2xl font-bold mb-6 font-serif">Other Articles</h3>
-          <div className="grid sm:grid-cols-2 gap-6">
-            {otherBlogs.map((b) => (
-              <Link
-                key={b._id}
-                to={`/blogs/${b.slug}`}
-                className="p-5 rounded-lg border shadow-sm hover:shadow-md transition flex flex-col"
-              >
-                {b.image && (
-                  <img
-                    src={b.image}
-                    alt={b.title}
-                    className="w-full h-40 object-cover rounded mb-4"
-                  />
-                )}
-                <h4 className="text-lg font-bold mb-2">{b.title}</h4>
-                <p className={`text-sm ${secondaryText}`}>
-                  {(typeof b.content === "string" ? b.content : "").substring(
-                    0,
-                    100
-                  )}
-                  ...
-                </p>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        {/* Back Button */}
-        <div className="mt-12 text-center">
+        {/* Sidebar */}
+        <aside className="lg:col-span-4 space-y-10 lg:sticky lg:top-20 self-start">
           <Link
             to="/blogs"
-            className="inline-block px-6 py-3 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+            className="block px-6 py-3 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 text-center"
           >
             ← Back to Blogs
           </Link>
-        </div>
+
+          <div>
+            <h3 className="text-xl font-bold mb-4">Related Articles</h3>
+            <div className="space-y-4">
+              {otherBlogs.slice(0, 5).map((b) => (
+                <Link
+                  key={b._id}
+                  to={`/blogs/${b.slug}`}
+                  className="block p-4 border rounded-lg hover:shadow-md transition"
+                >
+                  <h4 className="font-semibold">{b.title}</h4>
+                  <p className="text-sm text-gray-600">
+                    {b.content.replace(/<[^>]+>/g, "").substring(0, 90)}...
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Contact Form (Formspree) */}
+          <div>
+            <h3 className="text-xl font-bold mb-4">Contact the Author</h3>
+            <form
+              action="https://formspree.io/f/YOUR_FORM_ID"
+              method="POST"
+              className="space-y-3"
+            >
+              <input
+                type="text"
+                name="name"
+                placeholder="Your Name"
+                className="w-full p-2 border rounded bg-white"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Your Email"
+                className="w-full p-2 border rounded bg-white"
+              />
+              <textarea
+                name="message"
+                rows={3}
+                placeholder="Your Message"
+                className="w-full p-2 border rounded bg-white"
+              />
+              <button className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                Send
+              </button>
+            </form>
+          </div>
+        </aside>
       </div>
     </div>
   );
