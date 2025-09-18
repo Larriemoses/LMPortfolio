@@ -11,10 +11,26 @@ export default defineConfig({
       protocolImports: true,
     }),
   ],
+  build: {
+    outDir: "dist", // Vercel expects this
+    chunkSizeWarningLimit: 1000, // avoid warnings for big libs
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ["react", "react-dom"],
+          motion: ["framer-motion"],
+          icons: ["react-icons", "lucide-react"],
+        },
+      },
+    },
+  },
   server: {
-    // This is the key change
     proxy: {
-      "/api": "https://lmportfolio.onrender.com",
+      "/api": {
+        target: "https://lmportfolio.onrender.com",
+        changeOrigin: true,
+        secure: true,
+      },
     },
   },
 });
