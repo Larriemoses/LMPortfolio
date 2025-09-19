@@ -12,11 +12,13 @@ import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
 import BlogPreviewPage from "./pages/BlogPreviewPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { Analytics } from "@vercel/analytics/next";
 
 function App() {
   return (
     <ThemeProvider>
       <Router>
+        <Analytics />
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
