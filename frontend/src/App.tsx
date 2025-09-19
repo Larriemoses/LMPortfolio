@@ -12,7 +12,8 @@ import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
 import BlogPreviewPage from "./pages/BlogPreviewPage";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { Analytics } from "@vercel/analytics/next";
+// import { Analytics } from "@vercel/analytics/next";
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   return (
