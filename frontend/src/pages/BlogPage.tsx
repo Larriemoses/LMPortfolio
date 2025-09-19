@@ -15,7 +15,7 @@ const BlogPage: React.FC = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const { data } = await api.get("/blogs");
+        const { data } = await api.get<Blog[]>("/blogs");
         setBlogs(data);
       } catch (error) {
         console.error("Error fetching blogs:", error);
@@ -100,7 +100,7 @@ const BlogPage: React.FC = () => {
 
                     {blog.tags && blog.tags.length > 0 && (
                       <div className="flex flex-wrap gap-2 mb-3">
-                        {blog.tags.slice(0, 3).map((tag) => (
+                        {blog.tags.slice(0, 3).map((tag: string) => (
                           <span
                             key={tag}
                             className="flex items-center gap-1 text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded"

@@ -1,14 +1,13 @@
-// src/types/blog.ts
 export interface Blog {
   _id: string;
   title: string;
+  content: string;
   slug: string;
-  content: string; // HTML saved
-  author: string;
   category: string;
-  image?: string;
+  author: string;
   views: number;
-  likes: string[];
-  comments: any[];
-  tags?: string[];
+  image?: string;
+  tags: string[]; // ✅ Enforced as string[]
+  createdAt?: string;
+  updatedAt?: string;
 }
