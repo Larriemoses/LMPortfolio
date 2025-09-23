@@ -42,6 +42,7 @@ const Navbar: React.FC = () => {
         <button className="md:hidden text-2xl" style={{ color: palette.text }}>
           ☰
         </button>
+        <span></span>
       </div>
     </nav>
   );
