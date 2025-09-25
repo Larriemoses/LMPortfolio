@@ -114,6 +114,7 @@ const services: Service[] = [
       "Chatbot Development",
       "Process Optimization with AI",
       "WhatsApp Automation",
+      "Trading Bot Development",
     ],
   },
 ];
