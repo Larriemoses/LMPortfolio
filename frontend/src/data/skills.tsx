@@ -13,6 +13,11 @@ export const skills = [
     name: "SEMrush",
     logo: "https://seeklogo.com/images/S/semrush-logo-6F6D4F96FF-seeklogo.com.svg",
   },
+  { name: "Ahrefs", logo: "https://www.svgrepo.com/show/354009/ahrefs.svg" },
+  {
+    name: "SEMrush",
+    logo: "https://seeklogo.com/images/S/semrush-logo-6F6D4F96FF-seeklogo.com.svg",
+  },
   {
     name: "SurferSEO",
     logo: "https://seeklogo.com/images/S/surfer-seo-logo-2E5733B5D3-seeklogo.com.svg",
