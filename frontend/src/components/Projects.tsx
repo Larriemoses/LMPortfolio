@@ -20,6 +20,24 @@ interface Project {
 
 const projects: Project[] = [
   {
+    title: "Apexium Consults & Services",
+    description:
+      "A modern, responsive corporate website for Apexium Consult & Services Ltd, built with React, TypeScript, and Vite. This project showcases the firm's business consulting and legal services with a professional design, optimized performance, and mobile-first responsiveness.",
+    technologies: [
+      "React",
+      "Vite",
+      "Redux",
+      "Framer Motion",
+      "Python",
+      "Django",
+      "SEO",
+    ],
+    githubLink: "https://github.com/Larriemoses/FlowMeld",
+    liveLink: "https://apexiumconsults.com",
+    image:
+      "https://res.cloudinary.com/dvl2r3bdw/image/upload/v1757606113/WhatsApp_Image_2025-09-06_at_23.37.09_70e673d7_ip3isc.jpg",
+  },
+  {
     title: "Discount Region Store",
     description:
       "An SEO-optimized e-commerce platform that achieved #1 Google rankings, demonstrating expertise in full-stack development and search engine optimization.",
@@ -106,24 +124,6 @@ const projects: Project[] = [
     githubLink: "https://github.com/Larriemoses/FlowMeld",
     image:
       "https://res.cloudinary.com/dvl2r3bdw/image/upload/v1744342852/generate-ai-artificial-intelligence-logo-ai-logo-concept_268834-2200_obpogi.png",
-  },
-  {
-    title: "Apexium Consults & Services",
-    description:
-      "A modern, responsive corporate website for Apexium Consult & Services Ltd, built with React, TypeScript, and Vite. This project showcases the firm's business consulting and legal services with a professional design, optimized performance, and mobile-first responsiveness.",
-    technologies: [
-      "React",
-      "Vite",
-      "Redux",
-      "Framer Motion",
-      "Python",
-      "Django",
-      "SEO",
-    ],
-    githubLink: "https://github.com/Larriemoses/FlowMeld",
-    liveLink: "https://apexiumconsults.com",
-    image:
-      "https://res.cloudinary.com/dvl2r3bdw/image/upload/v1757606113/WhatsApp_Image_2025-09-06_at_23.37.09_70e673d7_ip3isc.jpg",
   },
 ];
 
