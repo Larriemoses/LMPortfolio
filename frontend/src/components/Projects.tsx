@@ -59,7 +59,7 @@ const projects: Project[] = [
       "Cloudinary",
     ],
     githubLink: "https://github.com/Larriemoses/Discount-Center",
-    liveLink: "https://discountcenter.com",
+    liveLink: "https://discountcenterstores.com",
     image:
       "https://res.cloudinary.com/dvl2r3bdw/image/upload/v1758218071/Screenshot_2025-09-18_185404_bbx7nx.png",
   },
@@ -121,6 +121,7 @@ const projects: Project[] = [
       "SEO",
     ],
     githubLink: "https://github.com/Larriemoses/FlowMeld",
+    liveLink: "https://apexiumconsults.com",
     image:
       "https://res.cloudinary.com/dvl2r3bdw/image/upload/v1757606113/WhatsApp_Image_2025-09-06_at_23.37.09_70e673d7_ip3isc.jpg",
   },
